@@ -1,0 +1,52 @@
+/* Column (masonry-style) grid: images keep their true aspect ratios and flow
+   into balanced columns — no forced equal-height cells, no cropping. */
+.grid {
+  column-count: 4;
+  column-gap: 8px;
+  padding: 8px;
+}
+
+.cell {
+  break-inside: avoid;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+/* Title + nav overlaid on the first cell. */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-3) var(--space-3) var(--space-4);
+  color: var(--color-text);
+}
+
+.footer {
+  padding: var(--space-3) var(--page-margin) var(--space-4);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.08em;
+  color: var(--color-faint);
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    column-count: 3;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    column-count: 2;
+  }
+  .overlay {
+    padding: var(--space-2);
+  }
+}
+
+@media (max-width: 420px) {
+  .overlay {
+    /* keep nav legible on the narrowest screens */
+    padding: var(--space-2) var(--space-1);
+  }
+}

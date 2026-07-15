@@ -1,0 +1,13 @@
+.sequence {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Deliberate vertical rhythm between image blocks. */
+.block {
+  margin-bottom: var(--rhythm);
+}
+
+.block:last-child {
+  margin-bottom: 0;
+}

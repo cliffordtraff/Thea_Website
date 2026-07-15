@@ -1,0 +1,11 @@
+.figure {
+  margin: 0;
+}
+
+/* next/image renders width/height attrs; these keep it fluid and
+   aspect-ratio-accurate within whatever width the layout wrapper allots. */
+.img {
+  width: 100%;
+  height: auto;
+  /* No object-fit: cover — the full photograph must always be visible. */
+}

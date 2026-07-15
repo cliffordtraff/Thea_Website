@@ -1,0 +1,39 @@
+.caption {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--color-dim);
+  line-height: 1.35;
+}
+
+.subject {
+  display: block;
+  font-size: var(--fs-caption);
+  font-style: normal;
+}
+
+.caret {
+  color: var(--color-faint);
+}
+
+.year {
+  color: var(--color-faint);
+}
+
+.meta {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.credit {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: var(--fs-meta);
+  font-style: italic;
+  letter-spacing: 0.04em;
+  color: var(--color-faint);
+}
