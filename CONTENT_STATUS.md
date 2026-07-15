@@ -5,8 +5,10 @@ implemented · desktop reviewed · mobile reviewed · approved.**
 
 Legend: ✅ done · 🟡 placeholder/partial · ⬜ not yet · ➖ n/a
 
-> **All imagery is neutral labeled placeholder blocks** (no real photographs).
-> "assets available" = placeholder assets generated, not real photos.
+> **All imagery is placeholder material** — grayscale stock photos from Lorem
+> Picsum (`public/images/`), NOT the reference site's photographs. Flat labeled
+> SVG blocks remain as an offline fallback (`public/placeholders/`).
+> "assets available" = placeholder assets in place, not the owner's real photos.
 
 | Page / Project        | Assets | Content | Implemented | Desktop rev. | Mobile rev. | Approved |
 | --------------------- | ------ | ------- | ----------- | ------------ | ----------- | -------- |

@@ -41,7 +41,11 @@ export function ph(id: keyof typeof DIMS | string, alt?: string): ImageAsset {
     throw new Error(`Unknown placeholder asset id: ${id}`);
   }
   return {
-    src: `/placeholders/${id}.svg`,
+    // Grayscale placeholder photos from Lorem Picsum, downloaded locally so the
+    // app has no runtime external dependency (see DECISIONS.md D3). NOT the
+    // reference site's photographs. Flat SVG blocks remain in /public/placeholders
+    // (via scripts/gen-placeholders.mjs) as an offline fallback.
+    src: `/images/${id}.jpg`,
     width: d.w,
     height: d.h,
     // Temporary, clearly-marked alt — tracked in CONTENT_STATUS.md (D11).
