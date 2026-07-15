@@ -1,0 +1,46 @@
+.frame {
+  min-height: 100vh;
+}
+
+/* Desktop: fixed left navigation column. */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--nav-width);
+  height: 100vh;
+  padding: var(--nav-top) 0 var(--space-4) var(--page-margin);
+  z-index: 10;
+}
+
+.sidebarInner {
+  position: sticky;
+  top: var(--nav-top);
+}
+
+/* Content sits to the right of the fixed sidebar. */
+.content {
+  margin-left: var(--nav-width);
+  padding: var(--nav-top) var(--page-margin) var(--space-7) var(--space-4);
+  max-width: 1200px;
+}
+
+/* Mobile / tablet-portrait: sidebar becomes a stacked top header. */
+@media (max-width: 768px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: var(--nav-top) var(--page-margin) var(--space-3);
+  }
+
+  .sidebarInner {
+    position: static;
+  }
+
+  .content {
+    margin-left: 0;
+    padding: var(--space-2) var(--page-margin) var(--space-6);
+    max-width: none;
+  }
+}
