@@ -1,14 +1,17 @@
 /* Column (masonry-style) grid: images keep their true aspect ratios and flow
    into balanced columns — no forced equal-height cells, no cropping. */
+/* Light field so the gutters between photos read as thin near-white borders,
+   matching the reference home page (#f0f0f0, ~14px between, ~7px outer edge). */
 .grid {
   column-count: 4;
-  column-gap: 8px;
-  padding: 8px;
+  column-gap: var(--home-gutter);
+  padding: var(--home-edge);
+  background: var(--color-home-bg);
 }
 
 .cell {
   break-inside: avoid;
-  margin-bottom: 8px;
+  margin-bottom: var(--home-gutter);
   position: relative;
 }
 
@@ -26,7 +29,8 @@
   padding: var(--space-3) var(--page-margin) var(--space-4);
   font-size: var(--fs-meta);
   letter-spacing: 0.08em;
-  color: var(--color-faint);
+  background: var(--color-home-bg);
+  color: #6f6f6f;
 }
 
 @media (max-width: 1024px) {

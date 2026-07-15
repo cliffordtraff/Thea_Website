@@ -10,6 +10,10 @@
   --color-dim: #8f8f8f;
   --color-faint: #6f6f6f;
   --color-frame: #3f3f3f;
+  /* Home grid field + gutters — light, matching the reference home page. */
+  --color-home-bg: #f0f0f0;
+  --home-gutter: 14px;
+  --home-edge: 7px;
 
   /* Type — family injected by next/font on <body> via --font-serif */
   --font-fallback: "EB Garamond", Georgia, "Times New Roman", serif;
