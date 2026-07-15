@@ -19,6 +19,7 @@ export const nav: NavItem[] = [
   { key: "commissions", label: "Recent Commissions", href: "/commissions" },
   { key: "personal", label: "Personal Work", href: "/personal" },
   { key: "elevator-series", label: "Elevator Series", href: "/elevator-series" },
+  { key: "video", label: "Video", href: "/video" },
   { key: "info", label: "Info + Contact", href: "/info" },
   {
     key: "instagram",

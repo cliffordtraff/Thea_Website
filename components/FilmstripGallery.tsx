@@ -78,18 +78,29 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
       kick();
     };
 
-    // Touch drag for coarse pointers (mobile / trackpad press-drag).
+    // Touch drag for coarse pointers (mobile / trackpad press-drag). Both axes
+    // drive the horizontal strip: a vertical drag (finger up→down) advances to
+    // the right, and a horizontal drag (right→left) does the same — whichever
+    // axis dominates the gesture wins. This mirrors the wheel handler, which
+    // already maps vertical input to horizontal travel.
     let touchX = 0;
+    let touchY = 0;
     const onTouchStart = (e: TouchEvent) => {
       touchX = e.touches[0].clientX;
+      touchY = e.touches[0].clientY;
     };
     const onTouchMove = (e: TouchEvent) => {
       if (max <= 0) return;
       const x = e.touches[0].clientX;
-      const dx = touchX - x;
+      const y = e.touches[0].clientY;
+      const dx = touchX - x; // right→left drag = advance right
+      const dy = y - touchY; // up→down drag  = advance right
       touchX = x;
+      touchY = y;
+      // Use whichever axis moved more this frame, so either gesture works.
+      const delta = Math.abs(dy) > Math.abs(dx) ? dy : dx;
       e.preventDefault();
-      target = Math.min(Math.max(target + dx, 0), max);
+      target = Math.min(Math.max(target + delta, 0), max);
       // Touch feels best near-1:1, so pull current toward target faster.
       current = target;
       track.style.transform = `translate3d(${-current}px, 0, 0)`;

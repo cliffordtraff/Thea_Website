@@ -1,0 +1,14 @@
+/* Clean, minimal slate: a single portrait clip, centered, no player chrome.
+   Capped so it never overflows the viewport height on interior pages. */
+.wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.video {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: min(1280px, 82vh);
+}
