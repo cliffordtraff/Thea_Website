@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { SiteFrame } from "@/components/SiteFrame";
-import { ProjectSequence } from "@/components/ProjectSequence";
+import { FilmstripView } from "@/components/FilmstripView";
 import { personal } from "@/content/personal";
+import { blockImages } from "@/content/blocks";
 
 export const metadata: Metadata = { title: personal.title };
 
 export default function PersonalPage() {
   return (
-    <SiteFrame active="personal">
-      <h2 className="sr-only">{personal.title}</h2>
-      <ProjectSequence blocks={personal.blocks} />
-    </SiteFrame>
+    <FilmstripView
+      images={blockImages(personal.blocks)}
+      active="personal"
+      title={personal.title}
+    />
   );
 }

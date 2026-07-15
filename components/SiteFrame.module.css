@@ -9,13 +9,15 @@
   left: 0;
   width: var(--nav-width);
   height: 100vh;
-  padding: var(--nav-top) 0 var(--space-4) var(--page-margin);
+  /* Top/left match FilmstripView's nav overlay (var(--space-3)) so the
+     "THEA TRAFF" title holds the exact same position across every tab. */
+  padding: var(--space-3) 0 var(--space-4) var(--space-3);
   z-index: 10;
 }
 
 .sidebarInner {
   position: sticky;
-  top: var(--nav-top);
+  top: var(--space-3);
 }
 
 /* Content sits to the right of the fixed sidebar. */

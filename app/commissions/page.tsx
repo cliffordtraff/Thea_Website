@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { SiteFrame } from "@/components/SiteFrame";
-import { ProjectSequence } from "@/components/ProjectSequence";
+import { FilmstripView } from "@/components/FilmstripView";
 import { commissions } from "@/content/commissions";
+import { blockImages } from "@/content/blocks";
 
 export const metadata: Metadata = { title: commissions.title };
 
 export default function CommissionsPage() {
   return (
-    <SiteFrame active="commissions">
-      <h2 className="sr-only">{commissions.title}</h2>
-      <ProjectSequence blocks={commissions.blocks} />
-    </SiteFrame>
+    <FilmstripView
+      images={blockImages(commissions.blocks)}
+      active="commissions"
+      title={commissions.title}
+    />
   );
 }

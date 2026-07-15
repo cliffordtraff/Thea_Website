@@ -22,7 +22,7 @@ export interface InfoContent {
 
 export const info: InfoContent = {
   portrait: {
-    src: "/images/thea-portrait.jpg",
+    src: "/images/archive/69a5364-2-copy-24-websize.jpg",
     width: 1201,
     height: 1800,
     alt: "Thea Traff",

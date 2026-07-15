@@ -1,6 +1,7 @@
-import { HomeGrid } from "@/components/HomeGrid";
+import { FilmstripView } from "@/components/FilmstripView";
+import { homeCells } from "@/content/home";
 
-/** Home — overlaid grid index (see PLAN.md §2). */
+/** Home — scroll-driven horizontal filmstrip index. */
 export default function HomePage() {
-  return <HomeGrid />;
+  return <FilmstripView images={homeCells.map((c) => c.image)} />;
 }
