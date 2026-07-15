@@ -1,0 +1,57 @@
+.wrap {
+  max-width: 640px;
+}
+
+.portrait {
+  width: 62%;
+  margin-bottom: var(--space-5);
+}
+
+/* Editorial italic voice for the bio, with roman emphasis kept for labels. */
+.bio {
+  font-style: italic;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--color-text);
+}
+
+.para {
+  margin-bottom: var(--space-3);
+  max-width: 46rem;
+}
+
+.contact {
+  font-style: italic;
+  margin: var(--space-4) 0;
+  line-height: 1.7;
+}
+
+.label {
+  font-style: italic;
+  color: var(--color-dim);
+}
+
+.list {
+  margin-bottom: var(--space-3);
+}
+
+.listHeading {
+  font-style: normal;
+  margin-bottom: 0.2rem;
+  color: var(--color-text);
+}
+
+.list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-style: normal;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+@media (max-width: 768px) {
+  .portrait {
+    width: 82%;
+  }
+}
