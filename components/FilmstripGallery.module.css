@@ -1,0 +1,81 @@
+/* Full-screen pinned stage. The page itself never scrolls vertically while this
+   is mounted (see the global rule added in globals.css for the filmstrip route). */
+.stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--color-home-bg);
+  touch-action: none; /* we drive horizontal movement ourselves on touch */
+}
+
+/* The long horizontal track. Its width is the sum of the images + gaps, which
+   overflows the viewport; we translate it left as the user scrolls. */
+.track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: max-content;
+  /* Oversized editorial spacing between frames + breathing room at the ends. */
+  gap: 8vw;
+  padding: 0 12vw;
+  will-change: transform;
+}
+
+.frame {
+  margin: 0;
+  flex: 0 0 auto;
+  height: 74vh;
+  display: flex;
+  align-items: center;
+}
+
+/* Transparent, layout-neutral click target around each photo (mirrors the
+   zoom trigger in Figure.tsx) — keyboard-focusable and opens the lightbox. */
+.trigger {
+  display: block;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: zoom-in;
+}
+
+/* Height-driven sizing: each photo fills the frame height and takes whatever
+   width its true aspect ratio needs — a real filmstrip of mixed orientations. */
+.img {
+  height: 100%;
+  width: auto;
+  max-width: none;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Thin progress line along the bottom edge (echoes the reference's indicator). */
+.progressTrack {
+  position: absolute;
+  left: 12vw;
+  right: 12vw;
+  bottom: 5vh;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.progressBar {
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+@media (max-width: 768px) {
+  .track {
+    gap: 12vw;
+    padding: 0 10vw;
+  }
+  .frame {
+    height: 62vh;
+  }
+}

@@ -1,12 +1,10 @@
 import type { ImageAsset } from "./types";
-import { ph } from "./assets";
 
 /*
  * Info + Contact.
- * Bio and contact details are NEUTRAL PLACEHOLDERS (see DECISIONS.md D4/D5).
- * The reference site's real email/phone are private and intentionally omitted.
- * The bio mirrors the reference's *structure* (bio → contact → clients →
- * interviews) but not its exact copy.
+ * Real bio, contact, clients, and interviews supplied by the site owner
+ * (Thea Traff). The layout mirrors the reference's structure: bio → contact →
+ * clients → interviews, set beneath a single portrait in a quiet italic serif.
  */
 
 export interface InfoContent {
@@ -23,29 +21,41 @@ export interface InfoContent {
 }
 
 export const info: InfoContent = {
-  portrait: ph("portrait-tall-a", "[placeholder] portrait"),
+  portrait: {
+    src: "/images/thea-portrait.jpg",
+    width: 1201,
+    height: 1800,
+    alt: "Thea Traff",
+  },
   bio: [
-    "This is placeholder biography copy for a proof-of-concept rebuild. The layout demonstrates how an editorial artist statement sits beneath a single portrait, set in a quiet italic serif.",
-    "A second placeholder paragraph stands in for career history, education, and background. Replace this text with approved copy before any real use. No text has been copied from the reference site.",
+    "Thea Traff (b. 1991) is a photographer based in New York City.",
+    "From 2018 to 2020, Thea was a Senior Photo Editor at TIME Magazine, and from 2013–2018, she was a Photo Editor at The New Yorker Magazine. In 2013, she graduated from Colgate University with a degree in Studio Art and Philosophy. Thea is originally from Minnetonka, Minnesota.",
   ],
   contact: {
-    // Clearly-marked placeholders — real contact details omitted on purpose.
-    email: "hello@example.com  (placeholder)",
-    phone: "(000) 000-0000  (placeholder)",
-    instagram: "@placeholder",
+    email: "theatraff@gmail.com",
+    phone: "952-270-9933",
+    instagram: "@theatraff",
   },
   clients: [
-    "Placeholder Client One",
-    "Placeholder Client Two",
-    "Placeholder Client Three",
-    "Placeholder Client Four",
-    "Placeholder Client Five",
-    "Placeholder Client Six",
-    "Placeholder Client Seven",
-    "Placeholder Client Eight",
+    "The New York Times",
+    "Rolling Stone",
+    "The New Yorker",
+    "TIME",
+    "Pentagram",
+    "Fast Company",
+    "Zeit",
+    "Inc.",
+    "Bloomberg Businessweek",
+    "Stern",
+    "The SotoMethod",
+    "Jenni Kayne",
+    "SpotCo",
+    "Penguin Random House",
   ],
   interviews: [
-    "Placeholder Interview, Publication Name (2024)",
-    "Placeholder Feature, Another Publication (2023)",
+    "Cyrus Magazine, Portraits of an Artist (2024)",
+    "Colgate Magazine, Portrait Mode (2024)",
+    "Creative Review, Exposure (2023)",
+    "Lensculture, Creative Leaps (2020)",
   ],
 };

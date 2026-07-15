@@ -1,10 +1,14 @@
+/* Centered editorial column (matches theatraff.com): the whole block is
+   centered within the content area, portrait and text alike. */
 .wrap {
   max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .portrait {
   width: 62%;
-  margin-bottom: var(--space-5);
+  margin: 0 auto var(--space-5);
 }
 
 /* Editorial italic voice for the bio, with roman emphasis kept for labels. */

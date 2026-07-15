@@ -23,7 +23,7 @@ export const nav: NavItem[] = [
   {
     key: "instagram",
     label: "Instagram",
-    href: "https://instagram.com/",
+    href: "https://www.instagram.com/theatraff",
     external: true,
   },
 ];
