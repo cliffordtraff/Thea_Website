@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import type { ImageAsset } from "@/content/types";
 import styles from "./FilmstripGallery.module.css";
 
@@ -153,35 +154,50 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
   return (
     <div className={styles.stage} ref={stageRef} aria-label="Horizontal photo gallery">
       <div className={styles.track} ref={trackRef}>
-        {images.map((image, i) => (
-          <figure className={styles.frame} key={i}>
-            {/* Click-to-focus: the data-zoomable button is picked up by the
-                surrounding GalleryLightbox via event delegation (same mechanism
-                as Figure.tsx), so a click opens the fullscreen enlargement. */}
-            <button
-              type="button"
-              className={styles.trigger}
-              data-zoomable
-              data-zoom-src={image.src}
-              data-zoom-w={image.width}
-              data-zoom-h={image.height}
-              data-zoom-alt={image.alt}
-              aria-label={`Enlarge image: ${image.alt}`}
-            >
-              {/* Plain <img> (not next/image): the strip sizes images by height
-                  with width:auto, so each keeps its true aspect ratio — no crop. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                className={styles.img}
-                src={image.src}
-                alt={image.alt}
-                draggable={false}
-                loading={i < 3 ? "eager" : "lazy"}
-                decoding="async"
-              />
-            </button>
-          </figure>
-        ))}
+        {images.map((image, i) => {
+          // Frames are height-driven (.frame height: 74vh desktop / 62vh
+          // mobile) with the image at width:auto, so each photo's *displayed*
+          // width is frameHeight × its aspect ratio. Expressing `sizes` that way
+          // lets next/image pick the smallest srcset candidate that actually
+          // covers the frame — a tall portrait requests far fewer pixels than a
+          // wide landscape, instead of both pulling one oversized file.
+          const ratio = (image.width / image.height).toFixed(3);
+          const sizes = `(max-width: 768px) calc(62vh * ${ratio}), calc(74vh * ${ratio})`;
+          return (
+            <figure className={styles.frame} key={i}>
+              {/* Click-to-focus: the data-zoomable button is picked up by the
+                  surrounding GalleryLightbox via event delegation (same mechanism
+                  as Figure.tsx), so a click opens the fullscreen enlargement. */}
+              <button
+                type="button"
+                className={styles.trigger}
+                data-zoomable
+                data-zoom-src={image.src}
+                data-zoom-w={image.width}
+                data-zoom-h={image.height}
+                data-zoom-alt={image.alt}
+                aria-label={`Enlarge image: ${image.alt}`}
+              >
+                {/* next/image → resized AVIF/WebP variants + responsive srcset.
+                    CSS (.img: height:100%; width:auto) still drives layout and
+                    keeps the true aspect ratio; the width/height props only
+                    reserve space (no CLS). First few load eager/priority. */}
+                <Image
+                  className={styles.img}
+                  src={image.src}
+                  width={image.width}
+                  height={image.height}
+                  alt={image.alt}
+                  sizes={sizes}
+                  draggable={false}
+                  priority={i < 3}
+                  loading={i < 3 ? undefined : "lazy"}
+                  decoding="async"
+                />
+              </button>
+            </figure>
+          );
+        })}
       </div>
       <div className={styles.progressTrack} aria-hidden="true">
         <div className={styles.progressBar} ref={progressRef} />

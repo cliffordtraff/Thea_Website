@@ -3,11 +3,18 @@
    var(--color-text) — which is near-white for the dark interior pages. We
    re-point those tokens to dark values *only within this overlay*, so the same
    Nav component reads legibly here without any change to Nav itself. */
+/* Auto-inverting nav. The overlay is transparent except for its text, so
+   blending the whole layer in `difference` mode leaves the filmstrip untouched
+   and flips only the glyphs against whatever sits behind them: white text reads
+   near-black over the light backdrop and near-white over the dark photographs —
+   no box, no scrim. (`difference` is weakest over exact mid-grey; acceptable
+   given the high-contrast imagery.) */
 .navOverlay {
   position: fixed;
   top: var(--space-3);
   left: var(--space-3);
   z-index: 20;
-  --color-text: #1c1c1c;
-  --color-dim: #8a8a8a;
+  mix-blend-mode: difference;
+  --color-text: #ffffff;
+  --color-dim: #a0a0a0;
 }

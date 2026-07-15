@@ -170,12 +170,6 @@ export function GalleryLightbox({ children }: { children: React.ReactNode }) {
                   <span aria-hidden="true">›</span>
                 </button>
               ) : null}
-
-              {items.length > 1 ? (
-                <p className={styles.counter} aria-live="polite">
-                  {index + 1} / {items.length}
-                </p>
-              ) : null}
             </div>,
             document.body,
           )

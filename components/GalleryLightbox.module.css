@@ -86,17 +86,6 @@
   right: 0.6rem;
 }
 
-.counter {
-  position: fixed;
-  bottom: 1.4rem;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0;
-  font-size: var(--fs-meta);
-  letter-spacing: 0.12em;
-  color: #6f6f6f;
-}
-
 /* Focus states must remain visible on the light backdrop. */
 .close:focus-visible,
 .arrow:focus-visible {

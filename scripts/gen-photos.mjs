@@ -23,6 +23,10 @@ const MANIFEST = path.join(ARCHIVE_SRC, "manifest.csv");
 const OUT_DIR = path.join(PROJECT_ROOT, "public", "images", "archive");
 const CONTENT_DIR = path.join(PROJECT_ROOT, "content");
 
+// Web-copy ceiling: long edge in px + JPEG quality for the resized masters.
+const MAX_EDGE = 2560;
+const JPEG_QUALITY = 80;
+
 // ── Section mapping ────────────────────────────────────────────────────────
 // A photo can appear on several crawled pages. Gallery ownership is assigned
 // once, most-specific-first. Home and Info deliberately reuse gallery photos.
@@ -86,8 +90,26 @@ for (const row of rows) {
   seenSlugs.add(slug);
 
   const outName = `${slug}.jpg`;
-  fs.copyFileSync(srcAbs, path.join(OUT_DIR, outName));
-  const { w, h } = dims(srcAbs);
+  const outAbs = path.join(OUT_DIR, outName);
+  fs.copyFileSync(srcAbs, outAbs);
+
+  // Cap the web copy's long edge. Originals run up to 4480×6720 / ~15 MB each;
+  // next/image never serves anything larger than a Retina viewport, so a 2560px
+  // master is the practical ceiling. Resize in place (the true original stays
+  // untouched in ARCHIVE_SRC). Aspect ratio is preserved by sips.
+  const orig = dims(srcAbs);
+  if (Math.max(orig.w, orig.h) > MAX_EDGE) {
+    execFileSync("sips", [
+      "-Z",
+      String(MAX_EDGE),
+      "-s",
+      "formatOptions",
+      String(JPEG_QUALITY),
+      outAbs,
+    ]);
+  }
+  // Record the *output* dimensions so next/image gets true intrinsic sizes.
+  const { w, h } = dims(outAbs);
 
   const asset = {
     src: `/images/archive/${outName}`,

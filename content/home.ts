@@ -32,8 +32,8 @@ export const homeCells: HomeCell[] = [
   {
     image: {
       src: "/images/archive/traff-final-01-copy.jpg",
-      width: 2400,
-      height: 3000,
+      width: 2048,
+      height: 2560,
       alt: "Photograph by Thea Traff",
     },
   },
@@ -64,8 +64,8 @@ export const homeCells: HomeCell[] = [
   {
     image: {
       src: "/images/archive/finalc-dsc-0884-copy-2.jpg",
-      width: 2400,
-      height: 2999,
+      width: 2048,
+      height: 2560,
       alt: "Photograph by Thea Traff",
     },
   },
