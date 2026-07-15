@@ -91,6 +91,23 @@ silently. Each entry: **Decision → Why → How to reverse.**
   files) the brief wants avoided; hand-scaffolding keeps dependencies minimal.
 - **Reverse:** N/A — standard Next.js layout, fully compatible with tooling.
 
+### D12. Click-to-enlarge lightbox — original, no library
+- **Decision:** Clicking any image opens a fullscreen lightbox (centered,
+  uncropped image; × close; ‹ › prev/next; Esc + arrow keys; backdrop-click to
+  close; `N / total` counter), imitating theatraff.com's PhotoSwipe "quick view."
+  Built as one small Client Component (`GalleryLightbox`), **no third-party
+  library**.
+- **Why:** The reference uses PhotoSwipe; the brief bans heavy libraries and wants
+  minimal client JS, so an ~1 KB original component is the better fit. Images stay
+  Server Components — the lightbox uses click **event delegation** on
+  `data-zoomable` triggers (real `<button>`s, so keyboard works). Adds ~1.2 KB JS
+  per page.
+- **Backdrop is near-white**, matching the reference's light wash (over our dark
+  gray page). Change `--overlay` / `.overlay` background in
+  `GalleryLightbox.module.css` to use a dark backdrop instead.
+- **Reverse:** Set `zoomable={false}` on `Figure`, or remove the `GalleryLightbox`
+  wrappers in `HomeGrid`/`SiteFrame`. No other code depends on it.
+
 ### D11. Image alt text is temporary and marked
 - **Decision:** Placeholder images use short, clearly-marked temporary alt text
   (e.g. `"[placeholder] large portrait"`), tracked in `CONTENT_STATUS.md`.

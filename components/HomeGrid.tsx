@@ -1,5 +1,6 @@
 import { Nav } from "./Nav";
 import { Figure } from "./Figure";
+import { GalleryLightbox } from "./GalleryLightbox";
 import { homeCells } from "@/content/home";
 import { site } from "@/content/site";
 import styles from "./HomeGrid.module.css";
@@ -11,7 +12,7 @@ import styles from "./HomeGrid.module.css";
  */
 export function HomeGrid() {
   return (
-    <>
+    <GalleryLightbox>
       <main className={styles.grid}>
         {homeCells.map((cell, i) => (
           <div key={i} className={styles.cell}>
@@ -29,6 +30,6 @@ export function HomeGrid() {
         ))}
       </main>
       <footer className={styles.footer}>{site.copyright}</footer>
-    </>
+    </GalleryLightbox>
   );
 }

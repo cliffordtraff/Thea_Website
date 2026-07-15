@@ -1,4 +1,5 @@
 import { Nav } from "./Nav";
+import { GalleryLightbox } from "./GalleryLightbox";
 import styles from "./SiteFrame.module.css";
 
 /**
@@ -20,7 +21,9 @@ export function SiteFrame({
           <Nav active={active} variant="sidebar" titleAs="link" />
         </div>
       </header>
-      <main className={styles.content}>{children}</main>
+      <main className={styles.content}>
+        <GalleryLightbox>{children}</GalleryLightbox>
+      </main>
     </div>
   );
 }

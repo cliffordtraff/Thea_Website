@@ -1,0 +1,127 @@
+/* display: contents => the wrapper adds no box and does not disturb the page
+   layout; children lay out exactly as if the provider weren't there. Events
+   still bubble through it (DOM delegation is unaffected by display: contents). */
+.wrap {
+  display: contents;
+}
+
+/* Fullscreen overlay. Near-white wash, matching the reference's quick-view. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5vmin;
+  background: rgba(247, 247, 246, 0.95);
+  animation: fade 180ms ease both;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.figure {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 88vw;
+  max-height: 90vh;
+}
+
+/* Contain within the viewport — the full photograph is always visible, never
+   cropped, aspect ratio preserved. */
+.image {
+  max-width: 88vw;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Quiet dark controls on the light backdrop. */
+.close,
+.arrow {
+  position: fixed;
+  border: 0;
+  background: none;
+  color: #2a2a2a;
+  cursor: pointer;
+  line-height: 1;
+  transition: opacity 140ms ease;
+}
+
+.close:hover,
+.arrow:hover {
+  opacity: 0.5;
+}
+
+.close {
+  top: 1.4rem;
+  right: 1.6rem;
+  font-size: 2.2rem;
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+.arrow {
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 3rem;
+  padding: 0.5rem 1rem;
+}
+
+.prev {
+  left: 0.6rem;
+}
+
+.next {
+  right: 0.6rem;
+}
+
+.counter {
+  position: fixed;
+  bottom: 1.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: var(--fs-meta);
+  letter-spacing: 0.12em;
+  color: #6f6f6f;
+}
+
+/* Focus states must remain visible on the light backdrop. */
+.close:focus-visible,
+.arrow:focus-visible {
+  outline: 1px solid #2a2a2a;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .close {
+    top: 0.8rem;
+    right: 1rem;
+  }
+  .arrow {
+    font-size: 2.4rem;
+    padding: 0.4rem 0.6rem;
+  }
+  .image,
+  .figure {
+    max-width: 94vw;
+    max-height: 86vh;
+  }
+}
