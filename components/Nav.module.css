@@ -29,7 +29,39 @@
 }
 
 .link {
+  position: relative;
+  display: inline-block;
   color: var(--color-text);
+  transition:
+    opacity 160ms ease,
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -0.08em;
+  left: 0;
+  height: 1px;
+  background: currentColor;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition:
+    opacity 160ms ease,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.link:hover {
+  opacity: 1;
+  transform: translateX(0.22rem);
+}
+
+.link:hover::after,
+.link:focus-visible::after {
+  opacity: 0.7;
+  transform: scaleX(1);
 }
 
 /* Active page: dimmed, like the reference. */
@@ -39,6 +71,12 @@
 
 .active:hover {
   opacity: 1; /* already dimmed; don't fade further */
+  transform: none;
+}
+
+.active:hover::after {
+  opacity: 0;
+  transform: scaleX(0);
 }
 
 /* Overlay variant (home): sits over the first grid cell, so give text a subtle

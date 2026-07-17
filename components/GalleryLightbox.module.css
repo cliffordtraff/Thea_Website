@@ -14,7 +14,7 @@
   align-items: center;
   justify-content: center;
   padding: 5vmin;
-  background: rgba(247, 247, 246, 0.95);
+  background: var(--color-lightbox-bg);
   animation: fade 180ms ease both;
 }
 
@@ -52,7 +52,7 @@
   position: fixed;
   border: 0;
   background: none;
-  color: #2a2a2a;
+  color: var(--color-lightbox-fg);
   cursor: pointer;
   line-height: 1;
   transition: opacity 140ms ease;
@@ -89,7 +89,7 @@
 /* Focus states must remain visible on the light backdrop. */
 .close:focus-visible,
 .arrow:focus-visible {
-  outline: 1px solid #2a2a2a;
+  outline: 1px solid var(--color-lightbox-fg);
   outline-offset: 3px;
 }
 

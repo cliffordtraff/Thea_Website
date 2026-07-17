@@ -53,6 +53,21 @@
   -webkit-user-drag: none;
 }
 
+.frame:first-child .img {
+  animation: firstFrameEntrance 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes firstFrameEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Thin progress line along the bottom edge (echoes the reference's indicator). */
 .progressTrack {
   position: absolute;
@@ -60,14 +75,62 @@
   right: 12vw;
   bottom: 5vh;
   height: 1px;
-  background: rgba(0, 0, 0, 0.14);
+  background: var(--color-strip-track);
 }
 
 .progressBar {
   height: 100%;
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--color-strip-bar);
   transform: scaleX(0);
   transform-origin: left center;
+}
+
+/* One-time "scroll sideways" cue. Sits just above the right end of the progress
+   line (the direction content is revealed). Quiet by default; JS toggles
+   data-hidden to fade it in only when scrollable and out on first interaction. */
+.scrollHint {
+  position: absolute;
+  right: 12vw;
+  bottom: calc(5vh + 12px);
+  display: flex;
+  align-items: baseline;
+  gap: 0.55em;
+  color: var(--color-strip-hint);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 700ms ease;
+}
+
+.scrollHint[data-hidden="true"] {
+  opacity: 0;
+}
+
+.scrollHintArrow {
+  display: inline-block;
+  animation: scrollHintNudge 1.8s ease-in-out infinite;
+}
+
+@keyframes scrollHintNudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame:first-child .img {
+    animation: none;
+  }
+
+  .scrollHintArrow {
+    animation: none;
+  }
 }
 
 @media (max-width: 768px) {
@@ -77,5 +140,10 @@
   }
   .frame {
     height: 62vh;
+  }
+  .scrollHint {
+    right: 10vw;
+    bottom: calc(5vh + 10px);
+    font-size: 0.66rem;
   }
 }

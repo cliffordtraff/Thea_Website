@@ -15,9 +15,18 @@
   --home-gutter: 14px;
   --home-edge: 7px;
 
+  /* Filmstrip chrome + lightbox — tokenized so a theme can retint them.
+     Defaults reproduce the original hard-coded values exactly (dark marks on
+     the light gallery field), so the default theme is visually unchanged. */
+  --color-strip-track: rgba(0, 0, 0, 0.14);
+  --color-strip-bar: rgba(0, 0, 0, 0.55);
+  --color-strip-hint: rgba(0, 0, 0, 0.5);
+  --color-lightbox-bg: rgba(247, 247, 246, 0.95);
+  --color-lightbox-fg: #2a2a2a;
+
   /* Type — family injected by next/font on <body> via --font-serif */
   --font-fallback: "EB Garamond", Georgia, "Times New Roman", serif;
-  --fs-title: 2.1rem;
+  --fs-title: 3rem;
   --fs-nav: 1.05rem;
   --fs-body: 1.05rem;
   --fs-caption: 0.95rem;
@@ -39,7 +48,7 @@
   /* Navigation */
   --nav-width: 250px;
   --nav-top: 2.2rem;
-  --nav-gap: 0.15rem;
+  --nav-gap: 0.42rem;
 
   /* Vertical rhythm between sequence blocks */
   --rhythm: var(--space-6);
@@ -52,6 +61,25 @@
   --iw-small-portrait: 26%;
   --iw-centered: 40%;
   --iw-offset: 52%;
+}
+
+/* ============================================================
+   DARK THEME (test) — opt-in via <html data-theme="dark">.
+   Purely additive: overrides only color tokens, so the default light theme
+   is untouched. To remove this experiment, delete this block, the
+   ThemeToggle component, and the theme <script> in app/layout.tsx.
+   ============================================================ */
+:root[data-theme="dark"] {
+  --color-bg: #000000;
+  --color-home-bg: #000000; /* the filmstrip stage — the big one */
+  --color-frame: #141414;
+  /* Invert the gallery chrome: light marks on the black field. */
+  --color-strip-track: rgba(255, 255, 255, 0.16);
+  --color-strip-bar: rgba(255, 255, 255, 0.62);
+  --color-strip-hint: rgba(255, 255, 255, 0.55);
+  /* Lightbox backdrop flips to black with light controls. */
+  --color-lightbox-bg: rgba(0, 0, 0, 0.94);
+  --color-lightbox-fg: #ededed;
 }
 
 @media (max-width: 768px) {
@@ -71,6 +99,7 @@
     --page-margin: 2rem;
     --nav-width: 210px;
     --rhythm: var(--space-5);
+    --fs-title: 2.6rem;
   }
 }
 
@@ -78,7 +107,7 @@
   :root {
     --page-margin: 1rem;
     --rhythm: var(--space-4);
-    --fs-title: 1.7rem;
+    --fs-title: 2rem;
   }
 }
 

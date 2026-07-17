@@ -1,25 +1,16 @@
 import type { Metadata } from "next";
-import { SiteFrame } from "@/components/SiteFrame";
-import styles from "./video.module.css";
+import { FilmstripView } from "@/components/FilmstripView";
+import { dance } from "@/content/dance";
+import { blockImages } from "@/content/blocks";
 
-export const metadata: Metadata = { title: "Video" };
+export const metadata: Metadata = { title: dance.title };
 
 export default function VideoPage() {
   return (
-    <SiteFrame active="video">
-      <h2 className="sr-only">Video</h2>
-      <div className={styles.wrap}>
-        <video
-          className={styles.video}
-          src="/brittle.mp4"
-          poster="/brittle-poster.jpg"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-        />
-      </div>
-    </SiteFrame>
+    <FilmstripView
+      images={blockImages(dance.blocks)}
+      active="video"
+      title={dance.title}
+    />
   );
 }

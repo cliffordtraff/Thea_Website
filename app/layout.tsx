@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { EB_Garamond } from "next/font/google";
 import { site } from "@/content/site";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import "./globals.css";
 
 /*
@@ -30,7 +31,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={serif.variable}>
-      <body>{children}</body>
+      <body>
+        {/* TEST: apply a saved dark-theme choice before paint (no flash).
+            Default is light; only an explicit "dark" selection opts in. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(localStorage.getItem('theme')==='dark'){document.documentElement.dataset.theme='dark'}}catch(e){}",
+          }}
+        />
+        {children}
+        <ThemeToggle />
+      </body>
     </html>
   );
 }

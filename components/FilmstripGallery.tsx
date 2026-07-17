@@ -22,11 +22,13 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const stage = stageRef.current;
     const track = trackRef.current;
     const progress = progressRef.current;
+    const hint = hintRef.current;
     if (!stage || !track) return;
 
     // Motion state lives in refs, not React state — we mutate the transform
@@ -37,11 +39,26 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
     let raf = 0;
     let running = false;
 
+    // One-time "scroll sideways" discoverability cue. It only appears when the
+    // strip can actually scroll (so the single-image landing never shows it),
+    // and retires permanently the first time the user moves the strip.
+    let hintDismissed = false;
+    let hintTimer = 0;
+    const dismissHint = () => {
+      if (hintDismissed) return;
+      hintDismissed = true;
+      if (hintTimer) clearTimeout(hintTimer);
+      if (hint) hint.dataset.hidden = "true";
+    };
+
     const measure = () => {
       // Total scrollable distance = full track width minus one viewport.
       max = Math.max(0, track.scrollWidth - stage.clientWidth);
       target = Math.min(target, max);
       current = Math.min(current, max);
+      // Reveal the cue only once the images have set a scrollable track width;
+      // keep it hidden (and never resurrect it) once dismissed.
+      if (hint && !hintDismissed) hint.dataset.hidden = max > 0 ? "false" : "true";
     };
 
     const tick = () => {
@@ -75,6 +92,7 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
       if (delta === 0) return;
       if (max <= 0) return; // nothing to scroll — let the page behave normally
       e.preventDefault();
+      dismissHint();
       target = Math.min(Math.max(target + delta, 0), max);
       kick();
     };
@@ -92,6 +110,7 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
     };
     const onTouchMove = (e: TouchEvent) => {
       if (max <= 0) return;
+      dismissHint();
       const x = e.touches[0].clientX;
       const y = e.touches[0].clientY;
       const dx = touchX - x; // right→left drag = advance right
@@ -120,6 +139,7 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
       else if (e.key === "End") next = max;
       else return;
       e.preventDefault();
+      dismissHint();
       target = Math.min(Math.max(next, 0), max);
       kick();
     };
@@ -134,6 +154,8 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
     });
 
     measure();
+    // Retire the cue after a few seconds even if the visitor never scrolls.
+    hintTimer = window.setTimeout(dismissHint, 6000);
     stage.addEventListener("wheel", onWheel, { passive: false });
     stage.addEventListener("touchstart", onTouchStart, { passive: true });
     stage.addEventListener("touchmove", onTouchMove, { passive: false });
@@ -142,6 +164,7 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
 
     return () => {
       cancelAnimationFrame(raf);
+      if (hintTimer) clearTimeout(hintTimer);
       ro.disconnect();
       stage.removeEventListener("wheel", onWheel);
       stage.removeEventListener("touchstart", onTouchStart);
@@ -201,6 +224,19 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
       </div>
       <div className={styles.progressTrack} aria-hidden="true">
         <div className={styles.progressBar} ref={progressRef} />
+      </div>
+      {/* Discoverability cue for the horizontal scroll. Starts hidden; the effect
+          reveals it only when the strip is scrollable and hides it on first move
+          (see measure()/dismissHint above). aria-hidden — nav + keyboard already
+          expose the same movement to assistive tech. */}
+      <div
+        className={styles.scrollHint}
+        ref={hintRef}
+        data-hidden="true"
+        aria-hidden="true"
+      >
+        <span className={styles.scrollHintLabel}>Scroll</span>
+        <span className={styles.scrollHintArrow}>&rarr;</span>
       </div>
     </div>
   );
