@@ -1,0 +1,12 @@
+/* Fixed, non-interactive strip pinned to the bottom of the viewport.
+   The canvas overlays page content the way the Tesla walker overlays the
+   chart. pointer-events:none so it never intercepts clicks. */
+.canvas {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 150px;
+  pointer-events: none;
+  z-index: 40;
+}
