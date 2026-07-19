@@ -67,21 +67,36 @@ function lerp(a: Pt, b: Pt, t: number): Pt {
   return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
 }
 
-/** An outlined limb: a dark capsule with a cream core (two stroked passes). */
-function limb(ctx: CanvasRenderingContext2D, a: Pt, b: Pt, w: number): void {
+/**
+ * A tapered, outlined arm: an upper arm + forearm through an elbow, with the
+ * forearm a touch thinner. Both ink passes are stroked before the cream cores
+ * so the elbow joins seamlessly.
+ */
+function drawArm(
+  ctx: CanvasRenderingContext2D,
+  shoulder: Pt,
+  elbow: Pt,
+  wrist: Pt,
+  wUpper: number,
+  wFore: number,
+): void {
+  const line = (a: Pt, b: Pt) => {
+    ctx.beginPath();
+    ctx.moveTo(a[0], a[1]);
+    ctx.lineTo(b[0], b[1]);
+    ctx.stroke();
+  };
   ctx.lineCap = "round";
   ctx.strokeStyle = INK;
-  ctx.lineWidth = w;
-  ctx.beginPath();
-  ctx.moveTo(a[0], a[1]);
-  ctx.lineTo(b[0], b[1]);
-  ctx.stroke();
+  ctx.lineWidth = wUpper;
+  line(shoulder, elbow);
+  ctx.lineWidth = wFore;
+  line(elbow, wrist);
   ctx.strokeStyle = FILL;
-  ctx.lineWidth = Math.max(1, w - 2 * BORDER);
-  ctx.beginPath();
-  ctx.moveTo(a[0], a[1]);
-  ctx.lineTo(b[0], b[1]);
-  ctx.stroke();
+  ctx.lineWidth = Math.max(1, wUpper - 2 * BORDER);
+  line(shoulder, elbow);
+  ctx.lineWidth = Math.max(1, wFore - 2 * BORDER);
+  line(elbow, wrist);
 }
 
 /** One continuous outlined limb through several points — no seam at the joints. */
@@ -100,6 +115,17 @@ function limbPath(ctx: CanvasRenderingContext2D, pts: Pt[], w: number): void {
   ctx.strokeStyle = FILL;
   ctx.lineWidth = Math.max(1, w - 2 * BORDER);
   trace();
+  ctx.stroke();
+}
+
+/** A small outlined hand — a cream blob with an ink outline. */
+function drawHand(ctx: CanvasRenderingContext2D, p: Pt, r = 2.7): void {
+  ctx.beginPath();
+  ctx.arc(p[0], p[1], r, 0, TAU);
+  ctx.fillStyle = FILL;
+  ctx.strokeStyle = INK;
+  ctx.lineWidth = 1.6;
+  ctx.fill();
   ctx.stroke();
 }
 
@@ -236,11 +262,18 @@ export function drawPhotographer(
 
   drawLeg(ctx, nearFoot); // near leg (in front)
 
-  // ---- near arm + camera (blended between slung and raised) ----
+  // ---- arms + camera (blended between slung and raised) ----
   const upHand: Pt = [EYE[0] + 1, EYE[1] + 1];
   const upCam: Pt = [EYE[0] + 6, EYE[1]];
   const hand = lerp(DOWN_HAND, upHand, raiseAmt);
   const cam = lerp(DOWN_CAM, upCam, raiseAmt);
+
+  // Bent elbows, blended between the slung and raised poses. The near hand
+  // grips the body; the far hand reaches forward to cradle under the lens.
+  const nearElbow = lerp([10, -44] as Pt, [12, -56] as Pt, raiseAmt);
+  const farShoulder: Pt = [2, -53];
+  const farElbow = lerp([9, -43] as Pt, [14, -58] as Pt, raiseAmt);
+  const farWrist: Pt = [cam[0] + 3, cam[1] + 3.3];
 
   // camera strap (fades out as the camera rises)
   if (raiseAmt < 0.5) {
@@ -255,7 +288,15 @@ export function drawPhotographer(
     ctx.restore();
   }
 
-  limb(ctx, SHOULDER, hand, 5.6);
+  // far (support) arm — behind the camera, a touch thinner and dimmer
+  ctx.save();
+  ctx.globalAlpha *= 0.82;
+  drawArm(ctx, farShoulder, farElbow, farWrist, 4.6, 4.0);
+  drawHand(ctx, farWrist, 2.4);
+  ctx.restore();
+
+  // near (grip) arm — bent at the elbow, forearm tapered
+  drawArm(ctx, SHOULDER, nearElbow, hand, 6.2, 5.2);
 
   // ---- camera: a compact stills camera silhouette (lens faces +x) ----
   const cx = cam[0];
@@ -311,6 +352,9 @@ export function drawPhotographer(
   ctx.beginPath();
   ctx.ellipse(cx + 10.5, cy - 1.6, 0.5, 1.3, 0, 0, TAU);
   ctx.fill();
+
+  // near hand grips the camera body (drawn over it so it reads as holding)
+  drawHand(ctx, hand);
 
   // shutter flash — a soft white bloom that reads on dark backgrounds.
   if (flashAlpha > 0.01) {
