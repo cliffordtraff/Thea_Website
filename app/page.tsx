@@ -1,7 +1,7 @@
-import { FilmstripView } from "@/components/FilmstripView";
+import { HomeHero } from "@/components/HomeHero";
 import { homeCells } from "@/content/home";
 
-/** Home — scroll-driven horizontal filmstrip index. */
+/** Home — single full-viewport hero photograph. */
 export default function HomePage() {
-  return <FilmstripView images={homeCells.map((c) => c.image)} />;
+  return <HomeHero image={homeCells[0].image} />;
 }

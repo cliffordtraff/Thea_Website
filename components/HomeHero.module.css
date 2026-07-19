@@ -1,0 +1,28 @@
+/* Full-viewport landing stage. Pinned so nothing scrolls behind it. */
+.hero {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--color-home-bg);
+}
+
+/* next/image `fill` sets position:absolute inset:0; object-fit `contain` shows
+   the whole photo scaled to fit the viewport — nothing cropped. Any leftover
+   space around it falls back to the home background color. */
+.img {
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Auto-inverting nav overlaid on the photo — mirrors FilmstripView.navOverlay
+   so the landing and the galleries share one navigation treatment. `difference`
+   flips the glyphs against whatever sits behind them (no box, no scrim). */
+.navOverlay {
+  position: fixed;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 20;
+  mix-blend-mode: difference;
+  --color-text: #ffffff;
+  --color-dim: #a0a0a0;
+}

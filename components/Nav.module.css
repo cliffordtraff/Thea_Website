@@ -1,5 +1,8 @@
 .nav {
   font-size: var(--fs-nav);
+  /* Lift the nav into its own view-transition layer so it stays pinned while
+     only the photo (the `root` snapshot) slides up. See globals.css. */
+  view-transition-name: site-nav;
 }
 
 .titleWrap {

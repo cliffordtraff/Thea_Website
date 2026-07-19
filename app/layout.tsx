@@ -3,6 +3,7 @@ import { EB_Garamond } from "next/font/google";
 import { site } from "@/content/site";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Photographer } from "@/components/photographer/Photographer";
+import { ViewTransitionProvider } from "@/components/ViewTransitions";
 import "./globals.css";
 
 /*
@@ -31,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={serif.variable}>
+    <html lang="en" className={serif.variable} suppressHydrationWarning>
       <body>
         {/* TEST: apply a saved dark-theme choice before paint (no flash).
             Default is light; only an explicit "dark" selection opts in. */}
@@ -41,7 +42,7 @@ export default function RootLayout({
               "try{if(localStorage.getItem('theme')==='dark'){document.documentElement.dataset.theme='dark'}}catch(e){}",
           }}
         />
-        {children}
+        <ViewTransitionProvider>{children}</ViewTransitionProvider>
         <ThemeToggle />
         {/* Easter egg: a photographer who strolls the page and takes photos.
             Analog of the Charting Platform's Tesla "walker" sprite. */}

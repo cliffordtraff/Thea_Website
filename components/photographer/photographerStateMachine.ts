@@ -41,20 +41,20 @@ export interface PhotographerState {
 const EDGE_MARGIN = 70;
 const FRAME_DURATION_MS = 140;
 
-const IDLE_MIN = 2600;
-const IDLE_MAX = 6200;
+const IDLE_MIN = 1200;
+const IDLE_MAX = 3000;
 
 /** How long the raise/flash/lower beat lasts (ms). */
 export const SHOOT_DURATION = 1650;
 
 /** Stroll speed (px per ms) — a calm walking pace. */
 const SPEED = 0.034;
-const WALK_MIN_MS = 4200;
-const WALK_MAX_MS = 16000;
+const WALK_MIN_MS = 1600;
+const WALK_MAX_MS = 6500;
 
 /** Stroll distance as a fraction of the available width. */
-const DIST_MIN = 0.32;
-const DIST_MAX = 0.66;
+const DIST_MIN = 0.12;
+const DIST_MAX = 0.34;
 
 // ---- helpers ---------------------------------------------------------------
 
@@ -95,8 +95,9 @@ function planWalk(state: PhotographerState, now: number): PhotographerState {
   const available = state.boundsWidth - EDGE_MARGIN * 2;
   let dist = rand(DIST_MIN, DIST_MAX) * available;
 
-  // Prefer alternating direction; flip if it would run off an edge.
-  let dir: Facing = (state.facing * -1) as Facing;
+  // Keep heading the same way so short hops still sweep across the full
+  // width; only turn around when the next hop would run off an edge.
+  let dir: Facing = state.facing;
   const projectedEnd = state.x + dir * dist;
   if (projectedEnd < EDGE_MARGIN || projectedEnd > state.boundsWidth - EDGE_MARGIN) {
     dir = (dir * -1) as Facing;

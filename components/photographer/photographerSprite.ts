@@ -40,11 +40,11 @@ const IMG_BOTTOM = -39; // local y of the image's bottom (its flared red edge)
 // The sketch crops her at mid-torso; these continue the red top down to a hem.
 const REDBL: Pt = [-8.3, IMG_BOTTOM]; // image red bottom-left (measured)
 const REDBR: Pt = [14.1, IMG_BOTTOM]; // image red bottom-right
-const HEML: Pt = [-1.5, -21]; // hemline left (lowered + tapered in, slim waist)
-const HEMR: Pt = [7, -21]; // hemline right
-const HEMC: Pt = [2.75, -18.5]; // hemline curve control
-const HIP: Pt = [2.75, -21];
-const GROUND = 10; // feet line — also sets the leg length
+const HEML: Pt = [-1.5, -14]; // hemline left (lowered + tapered in, slim waist)
+const HEMR: Pt = [7, -14]; // hemline right
+const HEMC: Pt = [2.75, -11.5]; // hemline curve control
+const HIP: Pt = [2.75, -14];
+const GROUND = 16; // feet line — also sets the leg length
 const SHOULDER: Pt = [4, -54];
 const EYE: Pt = [11.5, -71]; // where the raised camera meets her eye
 const DOWN_HAND: Pt = [11, -34];
@@ -107,17 +107,18 @@ function limbPath(ctx: CanvasRenderingContext2D, pts: Pt[], w: number): void {
 function drawShoe(ctx: CanvasRenderingContext2D, foot: Pt): void {
   const x = foot[0];
   const y = foot[1];
+  const s = 1.4; // shoe scale about the foot point
   ctx.fillStyle = FILL;
   ctx.strokeStyle = INK;
   ctx.lineWidth = 1.9;
   ctx.lineJoin = "round";
   ctx.lineCap = "round";
   ctx.beginPath();
-  ctx.moveTo(x - 1.8, y - 2.4); // ankle back
-  ctx.quadraticCurveTo(x - 3.2, y + 1.4, x - 0.6, y + 2.4); // heel
-  ctx.lineTo(x + 5, y + 2.4); // sole
-  ctx.quadraticCurveTo(x + 7.2, y + 2.4, x + 6, y + 0.2); // toe up
-  ctx.lineTo(x + 2.2, y - 1.6); // instep back toward ankle
+  ctx.moveTo(x - 1.8 * s, y - 2.4 * s); // ankle back
+  ctx.quadraticCurveTo(x - 3.2 * s, y + 1.4 * s, x - 0.6 * s, y + 2.4 * s); // heel
+  ctx.lineTo(x + 5 * s, y + 2.4 * s); // sole
+  ctx.quadraticCurveTo(x + 7.2 * s, y + 2.4 * s, x + 6 * s, y + 0.2 * s); // toe up
+  ctx.lineTo(x + 2.2 * s, y - 1.6 * s); // instep back toward ankle
   ctx.closePath();
   ctx.fill();
   ctx.stroke();
@@ -256,29 +257,64 @@ export function drawPhotographer(
 
   limb(ctx, SHOULDER, hand, 5.6);
 
-  // camera body + viewfinder + lens (front is +x)
+  // ---- camera: a compact stills camera silhouette (lens faces +x) ----
+  const cx = cam[0];
+  const cy = cam[1];
+  const rrect = (rx: number, ry: number, w: number, h: number, r: number) => {
+    ctx.beginPath();
+    if (typeof ctx.roundRect === "function") ctx.roundRect(rx, ry, w, h, r);
+    else ctx.rect(rx, ry, w, h);
+    ctx.fill();
+    ctx.stroke();
+  };
+  // Matches the reference icon, turned so the ringed lens points forward (+x):
+  // a body block at the eye, then the lens built from rings out to a flared hood.
   ctx.fillStyle = FILL;
   ctx.strokeStyle = INK;
-  ctx.lineWidth = 1.7;
+  ctx.lineWidth = 1.5;
+  ctx.lineJoin = "round";
+
+  // body block (sits back near the eye)
+  rrect(cx - 8.5, cy - 5, 9, 10, 2);
+  // shutter-release bump on the top plate
+  rrect(cx - 6.6, cy - 6.4, 2.6, 1.6, 0.5);
+  // small back dial / viewfinder detail
   ctx.beginPath();
-  if (typeof ctx.roundRect === "function") ctx.roundRect(cam[0] - 6, cam[1] - 4, 12, 8, 1.5);
-  else ctx.rect(cam[0] - 6, cam[1] - 4, 12, 8);
+  ctx.arc(cx - 6.1, cy - 0.4, 1.5, 0, TAU);
+  ctx.fillStyle = FILL;
   ctx.fill();
   ctx.stroke();
-  ctx.beginPath();
-  if (typeof ctx.roundRect === "function") ctx.roundRect(cam[0] - 4, cam[1] - 6, 4, 2, 1);
-  else ctx.rect(cam[0] - 4, cam[1] - 6, 4, 2);
-  ctx.fill();
-  ctx.stroke();
+
+  // lens: concentric rings from the mount out to a flared front hood
+  ctx.fillStyle = FILL;
+  rrect(cx - 0.5, cy - 3.6, 2.4, 7.2, 0.8); // mount ring
+  rrect(cx + 1.9, cy - 4.3, 3.4, 8.6, 1); // barrel
+  rrect(cx + 5.3, cy - 4.7, 3.6, 9.4, 1); // zoom ring (ribbed below)
+  rrect(cx + 8.9, cy - 5.4, 2.3, 10.8, 1); // flared front hood
+
+  // grip ribs on the zoom ring
+  ctx.strokeStyle = INK;
+  ctx.lineWidth = 1;
+  for (const rx of [6.2, 7.1, 8.0]) {
+    ctx.beginPath();
+    ctx.moveTo(cx + rx, cy - 3.4);
+    ctx.lineTo(cx + rx, cy + 3.4);
+    ctx.stroke();
+  }
+
+  // dark lens opening at the front + a glass glint
   ctx.fillStyle = INK;
   ctx.beginPath();
-  ctx.arc(cam[0] + 6, cam[1], 2.6, 0, TAU);
+  ctx.ellipse(cx + 10.7, cy, 1.1, 4.2, 0, 0, TAU);
+  ctx.fill();
+  ctx.fillStyle = "#fff";
+  ctx.beginPath();
+  ctx.ellipse(cx + 10.5, cy - 1.6, 0.5, 1.3, 0, 0, TAU);
   ctx.fill();
 
-  // shutter flash — a soft white bloom (reads on dark backgrounds) plus an
-  // ink-outlined starburst so it stays visible on light backgrounds too.
+  // shutter flash — a soft white bloom that reads on dark backgrounds.
   if (flashAlpha > 0.01) {
-    const lens: Pt = [cam[0] + 8, cam[1]];
+    const lens: Pt = [cam[0] + 11, cam[1]];
     ctx.save();
     ctx.globalAlpha = Math.min(1, flashAlpha);
     // white bloom — additive, for dark backgrounds
@@ -294,30 +330,6 @@ export function drawPhotographer(
     ctx.arc(lens[0], lens[1], 60, 0, TAU);
     ctx.fill();
     ctx.restore();
-    // starburst with an ink outline — visible on light backgrounds
-    const spikes = 8;
-    const ro = 20;
-    const ri = 8;
-    ctx.beginPath();
-    for (let i = 0; i < spikes * 2; i++) {
-      const a = (i / (spikes * 2)) * TAU - Math.PI / 2;
-      const r = i % 2 === 0 ? ro : ri;
-      const px = lens[0] + Math.cos(a) * r;
-      const py = lens[1] + Math.sin(a) * r;
-      if (i === 0) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
-    }
-    ctx.closePath();
-    ctx.fillStyle = "#fff";
-    ctx.fill();
-    ctx.lineJoin = "round";
-    ctx.strokeStyle = INK;
-    ctx.lineWidth = 1.6;
-    ctx.stroke();
-    ctx.fillStyle = "#fff";
-    ctx.beginPath();
-    ctx.arc(lens[0], lens[1], 5, 0, TAU);
-    ctx.fill();
     ctx.restore();
   }
 }
