@@ -55,14 +55,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={serif.variable} suppressHydrationWarning>
       <body>
-        {/* TEST: apply a saved dark-theme choice before paint (no flash).
-            Default is light; only an explicit "dark" selection opts in. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "try{if(localStorage.getItem('theme')==='dark'){document.documentElement.dataset.theme='dark'}}catch(e){}",
-          }}
-        />
         {children}
         <ScrollTopOnNavigate />
         <PreventActiveTabReclick />
