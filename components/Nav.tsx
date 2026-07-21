@@ -1,5 +1,5 @@
+import Link from "next/link";
 import { nav, site } from "@/content/site";
-import { TransitionLink } from "./TransitionLink";
 import styles from "./Nav.module.css";
 
 /**
@@ -21,9 +21,9 @@ export function Nav({
   titleAs?: "h1" | "link";
 }) {
   const title = (
-    <TransitionLink href="/" className={styles.title}>
+    <Link href="/" className={styles.title}>
       {site.title}
-    </TransitionLink>
+    </Link>
   );
 
   return (
@@ -52,13 +52,13 @@ export function Nav({
                   {item.label}
                 </a>
               ) : (
-                <TransitionLink
+                <Link
                   href={item.href}
                   className={`${styles.link} ${isActive ? styles.active : ""}`}
                   aria-current={isActive ? "page" : undefined}
                 >
                   {item.label}
-                </TransitionLink>
+                </Link>
               )}
             </li>
           );

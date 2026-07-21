@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { EB_Garamond } from "next/font/google";
 import { site } from "@/content/site";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Photographer } from "@/components/photographer/Photographer";
-import { ViewTransitionProvider } from "@/components/ViewTransitions";
 import "./globals.css";
 
 /*
@@ -42,11 +40,8 @@ export default function RootLayout({
               "try{if(localStorage.getItem('theme')==='dark'){document.documentElement.dataset.theme='dark'}}catch(e){}",
           }}
         />
-        <ViewTransitionProvider>{children}</ViewTransitionProvider>
+        {children}
         <ThemeToggle />
-        {/* Easter egg: a photographer who strolls the page and takes photos.
-            Analog of the Charting Platform's Tesla "walker" sprite. */}
-        <Photographer />
       </body>
     </html>
   );
