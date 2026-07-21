@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { EB_Garamond } from "next/font/google";
 import { site } from "@/content/site";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { ScrollTopOnNavigate } from "@/components/ScrollTopOnNavigate";
 import "./globals.css";
 
 /*
@@ -41,6 +42,7 @@ export default function RootLayout({
           }}
         />
         {children}
+        <ScrollTopOnNavigate />
         <ThemeToggle />
       </body>
     </html>
