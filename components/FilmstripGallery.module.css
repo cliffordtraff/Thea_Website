@@ -152,7 +152,7 @@
     align-items: center;
     width: auto;
     height: auto;
-    gap: calc(var(--space-5) * 0.5); /* -50% */
+    gap: calc(var(--space-5) * 0.25); /* -50%, then -50% again */
     /* Clear the fixed nav overlay before the first photo, then normal side
        margins + bottom breathing room. */
     padding: calc(var(--space-7) + var(--space-4)) var(--page-margin) var(--space-6);
