@@ -14,6 +14,15 @@
   background: var(--color-bg);
 }
 
+/* Dark mode flips the light field to black (see --color-home-bg in
+   globals.css) — revert to the same light text used by every other tab so
+   it stays legible against the black background. */
+:root[data-theme="dark"] .light {
+  --color-text: #ededed;
+  --color-dim: #8f8f8f;
+  --color-faint: #6f6f6f;
+}
+
 /* Desktop: fixed left navigation column. */
 .sidebar {
   position: fixed;
