@@ -3,6 +3,7 @@ import { EB_Garamond } from "next/font/google";
 import { site } from "@/content/site";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ScrollTopOnNavigate } from "@/components/ScrollTopOnNavigate";
+import { PreventActiveTabReclick } from "@/components/PreventActiveTabReclick";
 import "./globals.css";
 
 /*
@@ -43,6 +44,7 @@ export default function RootLayout({
         />
         {children}
         <ScrollTopOnNavigate />
+        <PreventActiveTabReclick />
         <ThemeToggle />
       </body>
     </html>
