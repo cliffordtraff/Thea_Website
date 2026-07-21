@@ -198,14 +198,5 @@ export const personal: Project = {
         alt: "Photograph by Thea Traff",
       },
     },
-    {
-      variant: "centered-portrait",
-      image: {
-        src: "/images/2026/outside/outside-22.jpg",
-        width: 1536,
-        height: 1920,
-        alt: "Photograph by Thea Traff",
-      },
-    },
   ],
 };

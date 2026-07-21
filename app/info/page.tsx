@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Info + Contact" };
 
 export default function InfoPage() {
   return (
-    <SiteFrame active="info">
+    <SiteFrame active="info" theme="light">
       <h2 className="sr-only">Info + Contact</h2>
       <div className={styles.wrap}>
         <div className={styles.portrait}>
@@ -21,7 +21,10 @@ export default function InfoPage() {
 
         <div className={styles.bio}>
           {info.bio.map((para, i) => (
-            <p key={i} className={styles.para}>
+            <p
+              key={i}
+              className={i === 0 ? styles.para : `${styles.para} ${styles.paraJustify}`}
+            >
               {para}
             </p>
           ))}
@@ -35,26 +38,38 @@ export default function InfoPage() {
             </div>
             <div>
               <span className={styles.label}>Instagram:</span>{" "}
-              {info.contact.instagram}
+              <a
+                href="https://www.instagram.com/theatraff"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {info.contact.instagram}
+              </a>
             </div>
           </address>
 
-          <div className={styles.list}>
-            <p className={styles.listHeading}>Select Clients:</p>
-            <ul>
-              {info.clients.map((c) => (
-                <li key={c}>{c}</li>
-              ))}
-            </ul>
-          </div>
+          <div className={styles.columns}>
+            <div className={styles.list}>
+              <p className={styles.listHeading}>Select Clients:</p>
+              <ul>
+                {info.clients.map((c) => (
+                  <li key={c}>{c}</li>
+                ))}
+              </ul>
+            </div>
 
-          <div className={styles.list}>
-            <p className={styles.listHeading}>Interviews:</p>
-            <ul>
-              {info.interviews.map((c) => (
-                <li key={c}>{c}</li>
-              ))}
-            </ul>
+            <div className={styles.list}>
+              <p className={styles.listHeading}>Interviews:</p>
+              <ul>
+                {info.interviews.map((item) => (
+                  <li key={item.label}>
+                    <a href={item.href} target="_blank" rel="noopener noreferrer">
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </div>

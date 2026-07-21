@@ -26,7 +26,7 @@
 
   /* Type — family injected by next/font on <body> via --font-serif */
   --font-fallback: "EB Garamond", Georgia, "Times New Roman", serif;
-  --fs-title: 3rem;
+  --fs-title: 2.5rem;
   --fs-nav: 1.05rem;
   --fs-body: 1.05rem;
   --fs-caption: 0.95rem;
@@ -99,7 +99,7 @@
     --page-margin: 2rem;
     --nav-width: 210px;
     --rhythm: var(--space-5);
-    --fs-title: 2.6rem;
+    --fs-title: 2.2rem;
   }
 }
 
@@ -107,7 +107,7 @@
   :root {
     --page-margin: 1rem;
     --rhythm: var(--space-4);
-    --fs-title: 2rem;
+    --fs-title: 1.7rem;
   }
 }
 

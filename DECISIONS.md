@@ -5,6 +5,94 @@ silently. Each entry: **Decision → Why → How to reverse.**
 
 ---
 
+### D18. Mobile filmstrip: plain vertical stack instead of horizontal scroll-jacking
+- **Decision:** Below 768px, `FilmstripGallery` (Home/Inside, Outside, Dance,
+  Elevator Series) no longer pins the viewport and hijacks scroll into
+  horizontal motion. It's a normal vertical stack of full-width photos with
+  native page scroll. `FilmstripGallery.tsx`'s wheel/touch/keyboard
+  scroll-jacking effect now attaches/detaches via
+  `matchMedia("(min-width: 769px)")` (re-checked on resize/rotation, not just
+  on mount) instead of running unconditionally; `FilmstripGallery.module.css`
+  gets a mobile media query that switches `.stage` from pinned/fixed to
+  static, `.track` from a horizontal flex row to a column, and `.frame`/`.img`
+  from height-driven to width-driven sizing. The horizontal-progress line and
+  "Scroll →" cue are hidden on mobile (nothing to indicate).
+- **Why:** Owner's request — the horizontal filmstrip interaction (wheel/swipe
+  sideways to advance) doesn't read as a natural mobile pattern; vertical
+  swipe/scroll is what mobile visitors expect.
+- **Reverse:** Delete the mobile `@media (max-width: 768px)` block added to
+  `FilmstripGallery.module.css` in this change, and in `FilmstripGallery.tsx`
+  replace the `matchMedia`-gated `sync()`/`attachDesktopBehavior()` wiring
+  with the plain unconditional effect body (attach once on mount, same as
+  before D18).
+
+### D17. Info + Contact: light field, matching the filmstrip pages
+- **Decision:** `SiteFrame` gains an optional `theme` prop (`"dark"` default,
+  `"light"` new). `app/info/page.tsx` opts into `theme="light"`, which
+  re-points `--color-bg`/`--color-text`/`--color-dim`/`--color-faint` to a
+  light palette (`--color-bg` = `var(--color-home-bg)`, the same near-white
+  field every filmstrip page already uses) scoped to `.light` in
+  `SiteFrame.module.css` — not the global `:root`, so nothing else changes.
+- **Why:** Owner's request — Info + Contact was the one page still on the
+  original warm dark-gray field (`--color-bg: #4a4a4a`) while every photo page
+  (Home/Inside, Outside, Elevator Series, Video) reads light. `SiteFrame` is
+  otherwise unused today (only `/info` renders through it), so this could have
+  been hardcoded, but the prop keeps the shell reusable if a future interior
+  page wants the dark field back.
+- **Reverse:** Drop `theme="light"` from `app/info/page.tsx` (or set
+  `theme="dark"`).
+
+### D16. Home (`/`) now renders the "Inside" gallery — Hero removed
+- **Decision:** The landing page no longer shows a single hero photo. It now
+  renders the same `FilmstripView` as the "Inside" tab (`commissions` project,
+  33 photos), with `active="commissions"` so the nav underlines correctly.
+  `components/Hero.tsx`/`Hero.module.css` (D14/D15) are deleted — dead code.
+  The nav's "Inside" link (`content/site.ts`) now points to `/` instead of
+  `/commissions`. The `/commissions` route itself is untouched (still renders
+  the same content at its own URL) so the experimental `app/v2`/`v3`/`v4`
+  pages, which hardcode a link to `/commissions`, keep working.
+- **Why:** Owner's request — "Inside" should be the landing experience rather
+  than a separate single-photo splash screen.
+- **Reverse:** Restore `app/page.tsx` to render a `Hero` (recreate the two
+  deleted files per D14's snippet) and point `content/site.ts`'s "Inside" href
+  back to `/commissions`.
+
+### D15. Home hero: blurred cover backdrop + uncropped photo on top — REVERTED
+- **Status:** Tried, then reverted same day at the owner's request (back to
+  D14's plain full-bleed crop). Kept here for the record; `Hero.tsx` /
+  `Hero.module.css` no longer match this description.
+- **Decision:** Refines D14. The hero photo (`lp.jpg`, 2000×2667, portrait) is
+  no longer directly `object-fit: cover`-cropped. Instead `Hero.tsx` renders
+  two stacked `next/image` layers: a `blur(60px)` + `scale(1.15)` cover copy
+  filling the viewport edge-to-edge (`aria-hidden`, low `quality`, purely
+  decorative), and the real photo on top at `object-fit: contain` — fully
+  visible, nothing cropped.
+- **Why:** A portrait image forced to `cover` a landscape viewport crops away
+  more than half its height, which read as too "zoomed in." Shrinking or
+  growing the stage box can't fix this — the crop amount is fixed by the
+  mismatch between the photo's aspect ratio and the screen's. The blurred
+  backdrop keeps every pixel of the screen full-bleed (no flat letterbox
+  bars) while the foreground copy shows the complete, unzoomed photograph.
+- **Reverse:** Delete the `.backdrop` `<Image>` and its CSS class; set `.img`
+  back to `object-fit: cover` (D14's original approach), or swap in a
+  landscape-cropped hero photo if one becomes available.
+
+### D14. Home hero is full-bleed (`object-fit: cover`) — explicit exception to "no cover"
+- **Decision:** The landing page's single photograph now fills the viewport
+  edge-to-edge via a dedicated `Hero` component (`components/Hero.tsx` +
+  `Hero.module.css`), using `next/image` with `fill` + `object-fit: cover`.
+  Home no longer routes through `FilmstripView`/`FilmstripGallery` (that stays
+  the shared presentation for every other photo section — Commissions,
+  Personal, Elevator Series, Video).
+- **Why:** Explicit request from the site owner. This is a deliberate,
+  documented exception to the project's default rule (AGENTS.md / D9 /
+  DESIGN_SYSTEM.md §Image width categories) that photography is never cropped
+  via `object-fit: cover` — the landing image is the one place a full-bleed
+  hero crop is wanted.
+- **Reverse:** Swap `app/page.tsx` back to `<FilmstripView images={homeCells.map((c) => c.image)} />`
+  (as before), or change `.img { object-fit: cover }` to `contain` in
+  `Hero.module.css` to keep the full-bleed stage but stop cropping.
+
 ### D13. Image performance: next/image everywhere + capped masters + AVIF
 - **Decision:** Three linked changes so the photo-heavy galleries ship small
   images: (1) the filmstrip (`FilmstripGallery.tsx`, used by the home index and

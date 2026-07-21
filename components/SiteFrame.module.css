@@ -2,6 +2,18 @@
   min-height: 100vh;
 }
 
+/* Light field variant (see DECISIONS.md D17) — matches the near-white
+   --color-home-bg used by every filmstrip page, instead of the default
+   warm dark-gray body field. Overridden here (not in :root) so it only
+   affects pages that opt in via <SiteFrame theme="light">. */
+.light {
+  --color-bg: var(--color-home-bg);
+  --color-text: #2a2a2a;
+  --color-dim: #6f6f6f;
+  --color-faint: #9a9a9a;
+  background: var(--color-bg);
+}
+
 /* Desktop: fixed left navigation column. */
 .sidebar {
   position: fixed;

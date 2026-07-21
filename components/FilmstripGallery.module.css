@@ -1,5 +1,6 @@
-/* Full-screen pinned stage. The page itself never scrolls vertically while this
-   is mounted (see the global rule added in globals.css for the filmstrip route). */
+/* Full-screen pinned stage (desktop only — see DECISIONS.md D18 for the
+   mobile vertical-stack override below). The page itself never scrolls
+   vertically while this is mounted above 768px. */
 .stage {
   position: fixed;
   inset: 0;
@@ -15,8 +16,8 @@
   align-items: center;
   height: 100%;
   width: max-content;
-  /* Oversized editorial spacing between frames + breathing room at the ends. */
-  gap: 8vw;
+  /* Editorial spacing between frames + breathing room at the ends. */
+  gap: 2.8vw; /* 4vw, -30% */
   padding: 0 12vw;
   will-change: transform;
 }
@@ -24,7 +25,7 @@
 .frame {
   margin: 0;
   flex: 0 0 auto;
-  height: 74vh;
+  height: 75.39vh; /* 74vh + 10%, then -5%, then -3%, then +0.5% (all photos except Info + Contact's portrait) */
   display: flex;
   align-items: center;
 }
@@ -133,17 +134,51 @@
   }
 }
 
+/* Below 768px the gallery drops the pinned horizontal filmstrip for a plain
+   vertical stack with native page scroll (see DECISIONS.md D18) — the
+   FilmstripGallery.tsx scroll-jacking effect (wheel/touch/keyboard + the
+   horizontal-progress cue) only attaches above this breakpoint; these rules
+   are its CSS half. */
 @media (max-width: 768px) {
+  .stage {
+    position: static;
+    inset: auto;
+    overflow: visible;
+    touch-action: auto;
+  }
+
   .track {
-    gap: 12vw;
-    padding: 0 10vw;
+    flex-direction: column;
+    align-items: center;
+    width: auto;
+    height: auto;
+    gap: calc(var(--space-5) * 0.5); /* -50% */
+    /* Clear the fixed nav overlay before the first photo, then normal side
+       margins + bottom breathing room. */
+    padding: calc(var(--space-7) + var(--space-4)) var(--page-margin) var(--space-6);
   }
+
   .frame {
-    height: 62vh;
+    height: auto;
+    width: 100%;
+    display: block;
   }
+
+  .trigger {
+    height: auto;
+    width: 100%;
+  }
+
+  .img {
+    height: auto;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Horizontal-scroll-only chrome — irrelevant once the gallery is a normal
+     vertical stack. */
+  .progressTrack,
   .scrollHint {
-    right: 10vw;
-    bottom: calc(5vh + 10px);
-    font-size: 0.66rem;
+    display: none;
   }
 }

@@ -17,7 +17,8 @@ export interface InfoContent {
     instagram: string;
   };
   clients: string[];
-  interviews: string[];
+  /** Each interview links out to the original piece, as on theatraff.com. */
+  interviews: { label: string; href: string }[];
 }
 
 export const info: InfoContent = {
@@ -53,9 +54,21 @@ export const info: InfoContent = {
     "Penguin Random House",
   ],
   interviews: [
-    "Cyrus Magazine, Portraits of an Artist (2024)",
-    "Colgate Magazine, Portrait Mode (2024)",
-    "Creative Review, Exposure (2023)",
-    "Lensculture, Creative Leaps (2020)",
+    {
+      label: "Cyrus Magazine, Portrait of an Artist (2024)",
+      href: "https://issuu.com/theblakeschool/docs/bla_magazine_fall2024_final2_issuu/s/57887611",
+    },
+    {
+      label: "Colgate Magazine, Portrait Mode (2024)",
+      href: "https://news.colgate.edu/magazine/2024/08/07/portrait-mode/",
+    },
+    {
+      label: "Creative Review, Exposure (2023)",
+      href: "https://www.creativereview.co.uk/exposure-thea-traff-photography/",
+    },
+    {
+      label: "Lensculture, Creative Leaps (2020)",
+      href: "https://www.lensculture.com/articles/thea-traff-creative-leaps",
+    },
   ],
 };

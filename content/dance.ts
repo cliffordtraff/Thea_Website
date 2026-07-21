@@ -39,18 +39,18 @@ export const dance: Project = {
     {
       variant: "centered-portrait",
       image: {
-        src: "/images/2026/dance/dance-04.jpg",
+        src: "/images/2026/dance/dance-05.jpg",
         width: 1920,
-        height: 1371,
+        height: 1372,
         alt: "Photograph by Thea Traff",
       },
     },
     {
       variant: "centered-portrait",
       image: {
-        src: "/images/2026/dance/dance-05.jpg",
+        src: "/images/2026/dance/dance-04.jpg",
         width: 1920,
-        height: 1372,
+        height: 1371,
         alt: "Photograph by Thea Traff",
       },
     },

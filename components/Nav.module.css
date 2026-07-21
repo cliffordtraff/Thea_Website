@@ -67,19 +67,20 @@
   transform: scaleX(1);
 }
 
-/* Active page: dimmed, like the reference. */
+/* Active page: dimmed, like the reference, with a persistent underline so the
+   current section stays legible at a glance. */
 .active {
   color: var(--color-dim);
+}
+
+.active::after {
+  opacity: 0.7;
+  transform: scaleX(1);
 }
 
 .active:hover {
   opacity: 1; /* already dimmed; don't fade further */
   transform: none;
-}
-
-.active:hover::after {
-  opacity: 0;
-  transform: scaleX(0);
 }
 
 /* Overlay variant (home): sits over the first grid cell, so give text a subtle

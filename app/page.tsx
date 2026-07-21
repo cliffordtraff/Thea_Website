@@ -1,7 +1,14 @@
-import { HomeHero } from "@/components/HomeHero";
-import { homeCells } from "@/content/home";
+import { FilmstripView } from "@/components/FilmstripView";
+import { commissions } from "@/content/commissions";
+import { blockImages } from "@/content/blocks";
 
-/** Home — single full-viewport hero photograph. */
+/** Home — the "Inside" (Recent Commissions) filmstrip is the landing page. */
 export default function HomePage() {
-  return <HomeHero image={homeCells[0].image} />;
+  return (
+    <FilmstripView
+      images={blockImages(commissions.blocks)}
+      active="commissions"
+      title={commissions.title}
+    />
+  );
 }

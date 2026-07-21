@@ -16,7 +16,7 @@ export const site = {
  * Nav can stay a Server Component (see DECISIONS.md D7).
  */
 export const nav: NavItem[] = [
-  { key: "commissions", label: "Inside", href: "/commissions" },
+  { key: "commissions", label: "Inside", href: "/" },
   { key: "personal", label: "Outside", href: "/personal" },
   { key: "video", label: "Dance", href: "/video" },
   { key: "elevator-series", label: "Elevator Series", href: "/elevator-series" },
