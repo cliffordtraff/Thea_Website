@@ -17,8 +17,8 @@ export const site = {
  */
 export const nav: NavItem[] = [
   { key: "commissions", label: "Inside", href: "/" },
-  { key: "personal", label: "Outside", href: "/personal" },
-  { key: "video", label: "Dance", href: "/video" },
+  { key: "outside", label: "Outside", href: "/outside" },
+  { key: "dance", label: "Dance", href: "/dance" },
   { key: "elevator-series", label: "Elevator Series", href: "/elevator-series" },
   { key: "info", label: "Info + Contact", href: "/info" },
   {

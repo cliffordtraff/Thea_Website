@@ -5,11 +5,11 @@ import { blockImages } from "@/content/blocks";
 
 export const metadata: Metadata = { title: dance.title };
 
-export default function VideoPage() {
+export default function DancePage() {
   return (
     <FilmstripView
       images={blockImages(dance.blocks)}
-      active="video"
+      active="dance"
       title={dance.title}
     />
   );

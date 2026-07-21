@@ -7,7 +7,7 @@ import type { Project } from "./types";
  */
 export const personal: Project = {
   title: "Personal Work",
-  slug: "personal",
+  slug: "outside",
   blocks: [
     {
       variant: "centered-portrait",

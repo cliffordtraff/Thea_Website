@@ -5,11 +5,11 @@ import { blockImages } from "@/content/blocks";
 
 export const metadata: Metadata = { title: personal.title };
 
-export default function PersonalPage() {
+export default function OutsidePage() {
   return (
     <FilmstripView
       images={blockImages(personal.blocks)}
-      active="personal"
+      active="outside"
       title={personal.title}
     />
   );
