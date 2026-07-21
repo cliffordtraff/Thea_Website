@@ -25,7 +25,11 @@ export function FilmstripView({
   return (
     <GalleryLightbox>
       {title ? <h1 className="sr-only">{title}</h1> : null}
-      <FilmstripGallery images={images} />
+      {/* Rendered before the gallery in source order: irrelevant on desktop
+          (fixed positioning ignores document flow), but on mobile — where
+          the nav drops out of `position: fixed` into normal flow (see
+          FilmstripView.module.css) — this is what puts it above the first
+          photo instead of below it. */}
       <div className={styles.navOverlay}>
         <Nav
           variant="sidebar"
@@ -33,6 +37,7 @@ export function FilmstripView({
           active={active}
         />
       </div>
+      <FilmstripGallery images={images} />
     </GalleryLightbox>
   );
 }

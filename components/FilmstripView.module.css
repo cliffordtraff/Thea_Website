@@ -18,3 +18,29 @@
   --color-text: #ffffff;
   --color-dim: #a0a0a0;
 }
+
+/* Below 768px the filmstrip is a plain vertical stack with native page
+   scroll, not a pinned full-bleed image (see DECISIONS.md D18) — so there's
+   no longer anything behind the nav for `difference` blending to react to.
+   Drop it into normal flow instead, sized and colored like the sidebar nav
+   on desktop, so it reserves its own height and the first photo lands right
+   after it instead of overlapping the lower nav items. */
+@media (max-width: 768px) {
+  .navOverlay {
+    position: static;
+    z-index: auto;
+    mix-blend-mode: normal;
+    /* Same light field as the photo stack below (--color-home-bg flips to
+       black in dark mode, taking this along with it) — otherwise the plain
+       dark body background would show through above the first photo. */
+    background: var(--color-home-bg);
+    --color-text: #2a2a2a;
+    --color-dim: #6f6f6f;
+    padding: var(--space-3) var(--page-margin) var(--space-4);
+  }
+
+  :root[data-theme="dark"] .navOverlay {
+    --color-text: #ededed;
+    --color-dim: #8f8f8f;
+  }
+}

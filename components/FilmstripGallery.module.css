@@ -153,9 +153,10 @@
     width: auto;
     height: auto;
     gap: calc(var(--space-5) * 0.25); /* -50%, then -50% again */
-    /* Clear the fixed nav overlay before the first photo, then normal side
-       margins + bottom breathing room. */
-    padding: calc(var(--space-7) + var(--space-4)) var(--page-margin) var(--space-6);
+    /* The nav above now sits in normal flow and supplies its own spacing
+       (see FilmstripView.module.css) — no top padding needed here to clear
+       it. Just side margins + bottom breathing room. */
+    padding: 0 var(--page-margin) var(--space-6);
   }
 
   .frame {
