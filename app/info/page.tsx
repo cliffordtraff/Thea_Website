@@ -50,7 +50,7 @@ export default function InfoPage() {
 
           <div className={styles.columns}>
             <div className={styles.list}>
-              <p className={styles.listHeading}>Select Clients:</p>
+              <p className={styles.listHeading}>Selected Clients:</p>
               <ul>
                 {info.clients.map((c) => (
                   <li key={c}>{c}</li>

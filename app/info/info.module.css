@@ -8,7 +8,7 @@
 
 .portrait {
   width: 62%;
-  margin: 0 auto var(--space-5);
+  margin: 0 auto calc(var(--space-5) * 0.8);
 }
 
 .bio {
@@ -31,7 +31,7 @@
 
 .contact {
   font-style: normal; /* browsers italicize <address> by default */
-  margin: var(--space-4) 0;
+  margin: calc(var(--space-4) * 0.8) 0 var(--space-4);
   line-height: 1.7;
 }
 
