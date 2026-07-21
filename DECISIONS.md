@@ -5,6 +5,73 @@ silently. Each entry: **Decision → Why → How to reverse.**
 
 ---
 
+### D19. Favicon: the wordmark's italic "T", as a baked outline
+- **Decision:** The site icon is the capital "T" from "THEA TRAFF", set in the
+  wordmark's exact typography — EB Garamond, weight 400, italic, uppercase
+  (`components/Nav.module.css` `.title` + `.titleWrap`). The glyph is shipped as
+  a **path**, not a `<text>` element: extracted from the italic EB Garamond
+  variable font `next/font` serves (default axis `wght=400`, upem 1000) and
+  baked into `app/icon.svg`. Files: `app/icon.svg` (**active** — near-white
+  `#ededed` letter on a black `#000000` field),
+  `public/icon-alt-transparent.svg` (dark letter, transparent field — **not
+  active**, kept for comparison), `app/icon1.png` (32×32 fallback),
+  `app/apple-icon.png` (180×180), `public/icon-512.png` (512×512, unreferenced
+  spare for a future manifest). All three PNGs carry the same `#000000` field as
+  the active SVG.
+  The wordmark's `letter-spacing: 0.08em` is deliberately *not* applied — on a
+  single glyph it only adds trailing space and would throw off centring.
+- **Why (outline, not text):** favicons never load webfonts, so `<text
+  font-family="EB Garamond">` would silently fall back to whatever serif the
+  viewer's OS has, losing the italic and the letterform.
+- **Why (optical centring):** the glyph is centred on a point half-way between
+  its bounding-box centre (431, 330.5) and its filled-area centroid
+  (374.6, 385.4). The italic's top-right serif overhangs far to the right and
+  its mass sits high, so bbox centring reads as jammed into the top-left, while
+  pure centroid centring overcorrects low-right and forces a smaller glyph.
+  Scale is set from the largest half-extent about that reference point, at 90%
+  of the canvas — the tightest margin is ~0.8px at 16px, enough that the stem's
+  bottom terminal doesn't bleed into the edge.
+- **Why (`icon1.png`, not `icon.png`):** Next resolves one file per `icon`
+  basename and `.png` outranks `.svg`, so an `app/icon.png` would suppress the
+  SVG entirely. The numbered convention emits both, SVG first.
+- **The Apple icon must stay opaque even if the rest go transparent.** iOS
+  composites transparent `apple-touch-icon`s onto black. With the current dark
+  field that is harmless, but it would bury a dark letter, so
+  `app/apple-icon.png` always carries a field.
+- **Colour — near-white on black, `#ededed` on `#000000`.** Owner's request.
+  This is the site's dark-theme pair from `globals.css`: `--color-text` over
+  `:root[data-theme="dark"]`'s `--color-bg`. A near-white letter is also the
+  truer reading of the wordmark: every photo page paints the nav title `#ffffff`
+  and flips it with `mix-blend-mode: difference` (`FilmstripView.module.css`
+  `.navOverlay`), so the "T" a visitor actually sees is near-white far more
+  often than dark — only `/info` renders it dark.
+- **Why the field is opaque at all.** An earlier revision made the SVG
+  theme-aware via `prefers-color-scheme` (`#2a2a2a` light / `#ededed` dark);
+  **that was removed because Chrome does not reliably honour the media query in
+  SVG favicons.** It silently fell back to the light-scheme colour, painting a
+  dark letter on a dark tab strip where it was almost invisible. Since the letter
+  cannot invert itself, it needs a ground it controls.
+- **Field shade — three were built and compared** against Chrome's real tab
+  colours before landing on black. A `#f0f0f0` light field with a dark letter
+  read as a bright box and inverted the wordmark's usual colour. `#4a4a4a`
+  (`--color-bg`) sat as a soft chip on a dark strip. `#000000` (chosen) is the
+  highest-contrast of the three and reads as a deliberate black tile on any tab.
+  If the visible square is ever the objection, `#3f3f3f` (`--color-frame`) blends
+  almost invisibly into Chrome's dark tab — at the cost of tuning the mark to one
+  browser's chrome.
+- **To swap the transparent variant in:** copy it over the active file —
+  `cp public/icon-alt-transparent.svg app/icon.svg` — then regenerate the three
+  PNGs (`app/icon1.png`, `app/apple-icon.png`, `public/icon-512.png`) without the
+  backdrop, **except** keep `app/apple-icon.png` opaque, per the iOS note above.
+  Note that variant carries the *dark* letter, so it suits light surfaces only.
+- **No metadata change was needed:** Next's `app/` file conventions emit the
+  `<link rel="icon">` / `<link rel="apple-touch-icon">` tags automatically.
+- **Reverse:** delete `app/icon.svg`, `app/icon1.png`, `app/apple-icon.png`,
+  `public/icon-512.png`, and `public/icon-alt-transparent.svg`. Nothing else
+  references them. To re-cut the glyph, the
+  source font is the italic subset under `.next/static/media/` carrying `T`
+  (identify it with fontTools by `name` ID 2 == "Italic" and `T` in the cmap).
+
 ### D18. Mobile filmstrip: plain vertical stack instead of horizontal scroll-jacking
 - **Decision:** Below 768px, `FilmstripGallery` (Home/Inside, Outside, Dance,
   Elevator Series) no longer pins the viewport and hijacks scroll into

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Thea Traff">
+  <!--
+    ACTIVE FAVICON — near-white "T" on a black field.
+    A transparent-background alternative is kept at
+    public/icon-alt-transparent.svg. See DECISIONS.md D19.
+
+    Typography is taken verbatim from the "THEA TRAFF" wordmark
+    (components/Nav.module.css `.title` + `.titleWrap`): EB Garamond, weight 400,
+    italic, uppercase. The outline below is the real glyph, extracted from the
+    italic EB Garamond variable font next/font serves (default axis wght=400,
+    upem 1000) and baked to a path — a <text> element would silently fall back
+    to a system serif, since favicons never load webfonts.
+
+    Placement: centred on a point half-way between the glyph's bounding-box
+    centre (431, 330.5) and its filled-area centroid (374.6, 385.4), so the
+    italic's overhanging top-right serif doesn't drag the letter visually left.
+
+    Colours are the site's dark-theme pair from app/globals.css —
+    `--color-text: #ededed` on the dark theme's `--color-bg: #000000`
+    (`:root[data-theme="dark"]`). A near-white letter also matches how the
+    wordmark actually reads on every photo page, where the nav paints the title
+    `#ffffff` and flips it with `mix-blend-mode: difference`
+    (components/FilmstripView.module.css `.navOverlay`).
+
+    The field is opaque because a bare letter cannot adapt: Chrome does not
+    reliably honour prefers-color-scheme in SVG favicons, so a transparent mark
+    is stuck at one colour and disappears against half the tab strips it lands on.
+  -->
+  <rect width="64" height="64" fill="#000000"/>
+  <path fill="#ededed" transform="translate(0.0379 60.4033) scale(0.079350 -0.079350)" d="M147 -5Q135 -5 129.0 -2.5Q123 0 123 6Q123 13 133.0 16.0Q143 19 160 22Q197 29 221.5 47.5Q246 66 256 102L378 530Q392 581 390.0 597.5Q388 614 375 614H292Q243 614 216.5 594.5Q190 575 172 553Q163 543 155.5 531.5Q148 520 141.5 512.0Q135 504 129 504Q123 504 120.5 506.5Q118 509 118 517Q118 519 120.0 527.0Q122 535 128 548Q138 568 150.5 594.0Q163 620 170 646Q172 653 177.5 659.5Q183 666 187 666Q191 666 196.0 662.5Q201 659 205 654Q208 651 214.0 648.0Q220 645 235.0 643.5Q250 642 281 642H638Q669 642 684.5 644.0Q700 646 707.0 649.0Q714 652 717 655Q722 660 726.0 663.0Q730 666 734 666Q744 666 744 655Q744 648 740.5 640.0Q737 632 734 627Q729 617 718.0 584.5Q707 552 699 511Q698 503 695.0 500.0Q692 497 688 497Q681 497 677.5 503.5Q674 510 674 520Q674 566 659.5 590.0Q645 614 607 614H507Q494 614 485.5 608.0Q477 602 469.5 583.5Q462 565 451 527L330 102Q320 66 333.5 47.5Q347 29 380 22Q395 19 400.0 16.0Q405 13 405 6Q405 0 396.0 -2.5Q387 -5 375 -5Q350 -5 334.0 -3.5Q318 -2 303.5 -1.0Q289 0 268 0Q245 0 227.0 -1.0Q209 -2 190.5 -3.5Q172 -5 147 -5Z"/>
+</svg>
