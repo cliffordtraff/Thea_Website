@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { EB_Garamond } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { site } from "@/content/site";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ScrollTopOnNavigate } from "@/components/ScrollTopOnNavigate";
@@ -17,6 +18,9 @@ const serif = EB_Garamond({
   display: "swap",
   variable: "--font-serif",
 });
+
+const googleAnalyticsId =
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-SRVDMHMB5M";
 
 export const metadata: Metadata = {
   title: {
@@ -60,6 +64,7 @@ export default function RootLayout({
         <PreventActiveTabReclick />
         <ThemeToggle />
       </body>
+      <GoogleAnalytics gaId={googleAnalyticsId} />
     </html>
   );
 }
