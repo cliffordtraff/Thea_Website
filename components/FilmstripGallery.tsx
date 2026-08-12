@@ -60,6 +60,17 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
     }
   }, []);
 
+  const scrollToTop = () => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    window.scrollTo({
+      top: 0,
+      behavior: reduceMotion ? "auto" : "smooth",
+    });
+  };
+
   useEffect(() => {
     const stage = stageRef.current;
     const track = trackRef.current;
@@ -378,6 +389,13 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
         <span className={styles.scrollHintLabel}>Scroll</span>
         <span className={styles.scrollHintArrow}>&rarr;</span>
       </div>
+      <button
+        type="button"
+        className={styles.backToTop}
+        onClick={scrollToTop}
+      >
+        Back to top <span aria-hidden="true">&uarr;</span>
+      </button>
     </div>
   );
 }

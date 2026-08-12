@@ -106,6 +106,12 @@
   animation: scrollHintNudge 1.8s ease-in-out infinite;
 }
 
+/* The mobile stack gets an explicit way back to the navigation after its final
+   photograph. Kept out of the desktop filmstrip, where there is no long page. */
+.backToTop {
+  display: none;
+}
+
 @keyframes scrollHintNudge {
   0%,
   100% {
@@ -133,6 +139,7 @@
     inset: auto;
     overflow: visible;
     touch-action: auto;
+    padding-bottom: var(--space-4);
   }
 
   .track {
@@ -144,7 +151,26 @@
     /* The nav above now sits in normal flow and supplies its own spacing
        (see FilmstripView.module.css) — no top padding needed here to clear
        it. Just side margins + bottom breathing room. */
-    padding: 0 var(--page-margin) var(--space-6);
+    padding: 0 var(--page-margin) var(--space-4);
+  }
+
+  .backToTop {
+    display: block;
+    margin: 0 auto;
+    padding: 0.35rem 0 0.2rem;
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    background: none;
+    color: var(--color-lightbox-fg);
+    font: inherit;
+    font-size: 0.9rem;
+    font-style: italic;
+    cursor: pointer;
+    transform: translateY(-0.5rem);
+  }
+
+  .backToTop:focus-visible {
+    outline-color: currentColor;
   }
 
   .frame {

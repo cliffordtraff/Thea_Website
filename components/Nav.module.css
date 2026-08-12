@@ -86,3 +86,11 @@
 .overlay .link {
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
 }
+
+@media (max-width: 768px) {
+  /* Compensate for the italic capital T's left side-bearing so the visible
+     wordmark aligns with the navigation labels below it. */
+  .title {
+    margin-left: -0.16em;
+  }
+}

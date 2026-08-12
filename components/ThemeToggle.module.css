@@ -27,7 +27,8 @@
 
 @media (max-width: 768px) {
   .toggle {
-    top: var(--space-2);
+    position: absolute;
+    top: calc(var(--space-3) + 0.15rem);
     right: var(--space-2);
     font-size: 0.66rem;
   }
