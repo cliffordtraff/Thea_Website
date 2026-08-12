@@ -121,8 +121,8 @@ export const commissions: Project = {
       variant: "centered-portrait",
       image: {
         src: "/images/2026/inside/inside-13.jpg",
-        width: 8117,
-        height: 11364,
+        width: 1828,
+        height: 2560,
         alt: "Photograph by Thea Traff",
       },
     },

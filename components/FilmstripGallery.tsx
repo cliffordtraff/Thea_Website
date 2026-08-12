@@ -1,9 +1,17 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import type { ImageAsset } from "@/content/types";
 import styles from "./FilmstripGallery.module.css";
+
+// Desktop visitors can move across several frames before native lazy loading
+// notices the transformed track. Warm a modest initial buffer at low priority,
+// then keep one viewport beyond the intended position ready. Mobile retains
+// native lazy loading because its vertical scroll gives the browser reliable
+// proximity information and bandwidth is more likely to be constrained.
+const INITIAL_DESKTOP_WARM_COUNT = 10;
+const DESKTOP_LOOKAHEAD_VIEWPORTS = 1;
 
 /**
  * Scroll-driven horizontal filmstrip (imitates the *feel* of the reference
@@ -23,6 +31,34 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
+  const firstSrc = images[0]?.src;
+  const revealSequenceRef = useRef({
+    firstSrc,
+    settled: [] as boolean[],
+    next: 0,
+  });
+
+  if (revealSequenceRef.current.firstSrc !== firstSrc) {
+    revealSequenceRef.current = { firstSrc, settled: [], next: 0 };
+  }
+
+  const markImageSettled = useCallback((index: number) => {
+    const sequence = revealSequenceRef.current;
+    sequence.settled[index] = true;
+
+    const galleryImages = trackRef.current?.querySelectorAll("img");
+    if (!galleryImages) return;
+
+    // Reveal only the contiguous ready prefix. A small later file may finish
+    // first, but it stays hidden until every photograph before it is ready.
+    while (
+      sequence.next < galleryImages.length &&
+      sequence.settled[sequence.next]
+    ) {
+      galleryImages[sequence.next].dataset.sequenceReady = "true";
+      sequence.next += 1;
+    }
+  }, []);
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -48,6 +84,56 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
       let raf = 0;
       let running = false;
 
+      const galleryImages = Array.from(
+        track.querySelectorAll<HTMLImageElement>("img"),
+      );
+      const firstImage = galleryImages[0];
+      let firstRequestSettled = Boolean(
+        firstImage?.complete && firstImage.naturalWidth > 0,
+      );
+      galleryImages.forEach((img, index) => {
+        if (img.complete) markImageSettled(index);
+      });
+
+      const warmImage = (img: HTMLImageElement) => {
+        if (img.loading !== "lazy") return;
+        // Look-ahead requests should start early without competing with the
+        // first photograph's sole high-priority request.
+        img.fetchPriority = "low";
+        img.loading = "eager";
+      };
+
+      const warmThrough = (offset: number) => {
+        if (!firstRequestSettled) return;
+
+        const cutoff =
+          offset +
+          stage.clientWidth * (1 + DESKTOP_LOOKAHEAD_VIEWPORTS);
+
+        galleryImages.forEach((img) => {
+          const frame = img.closest<HTMLElement>("figure");
+          if (frame && frame.offsetLeft < cutoff) warmImage(img);
+        });
+      };
+
+      // Give the first photograph an uncontested head start. Once it settles,
+      // start the remaining initial buffer at low priority so a quick first
+      // gesture still cannot outrun the transformed filmstrip.
+      const warmInitialBuffer = () => {
+        firstRequestSettled = true;
+        galleryImages
+          .slice(1, INITIAL_DESKTOP_WARM_COUNT)
+          .forEach(warmImage);
+        warmThrough(target);
+      };
+
+      if (firstRequestSettled) {
+        warmInitialBuffer();
+      } else {
+        firstImage?.addEventListener("load", warmInitialBuffer, { once: true });
+        firstImage?.addEventListener("error", warmInitialBuffer, { once: true });
+      }
+
       // One-time "scroll sideways" discoverability cue. It only appears when
       // the strip can actually scroll (so the single-image landing never
       // shows it), and retires permanently the first time the user moves it.
@@ -65,6 +151,7 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
         max = Math.max(0, track.scrollWidth - stage.clientWidth);
         target = Math.min(target, max);
         current = Math.min(current, max);
+        warmThrough(target);
         // Reveal the cue only once the images have set a scrollable track
         // width; keep it hidden (and never resurrect it) once dismissed.
         if (hint && !hintDismissed) {
@@ -106,6 +193,7 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
         e.preventDefault();
         dismissHint();
         target = Math.min(Math.max(target + delta, 0), max);
+        warmThrough(target);
         kick();
       };
 
@@ -134,6 +222,7 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
         const delta = Math.abs(dy) > Math.abs(dx) ? dy : dx;
         e.preventDefault();
         target = Math.min(Math.max(target + delta, 0), max);
+        warmThrough(target);
         // Touch feels best near-1:1, so pull current toward target faster.
         current = target;
         track.style.transform = `translate3d(${-current}px, 0, 0)`;
@@ -154,6 +243,7 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
         e.preventDefault();
         dismissHint();
         target = Math.min(Math.max(next, 0), max);
+        warmThrough(target);
         kick();
       };
 
@@ -179,6 +269,8 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
         cancelAnimationFrame(raf);
         if (hintTimer) clearTimeout(hintTimer);
         ro.disconnect();
+        firstImage?.removeEventListener("load", warmInitialBuffer);
+        firstImage?.removeEventListener("error", warmInitialBuffer);
         stage.removeEventListener("wheel", onWheel);
         stage.removeEventListener("touchstart", onTouchStart);
         stage.removeEventListener("touchmove", onTouchMove);
@@ -208,10 +300,15 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
       mql.removeEventListener("change", sync);
       teardownDesktopBehavior?.();
     };
-  }, [images.length]);
+  }, [firstSrc, images.length, markImageSettled]);
 
   return (
-    <div className={styles.stage} ref={stageRef} aria-label="Photo gallery">
+    <div
+      className={styles.stage}
+      key={firstSrc}
+      ref={stageRef}
+      aria-label="Photo gallery"
+    >
       <div className={styles.track} ref={trackRef}>
         {images.map((image, i) => {
           // Desktop frames are height-driven (.frame height, see
@@ -241,7 +338,9 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
                     CSS still drives layout (height-driven on desktop,
                     width-driven in the mobile vertical stack) and keeps the
                     true aspect ratio; the width/height props only reserve
-                    space (no CLS). First few load eager/priority. */}
+                    space (no CLS). The first photo alone loads at high
+                    priority; the desktop effect starts its low-priority
+                    look-ahead only after that request settles. */}
                 <Image
                   className={styles.img}
                   src={image.src}
@@ -250,9 +349,13 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
                   alt={image.alt}
                   sizes={sizes}
                   draggable={false}
-                  priority={i < 3}
-                  loading={i < 3 ? undefined : "lazy"}
+                  priority={i === 0}
+                  loading={i === 0 ? undefined : "lazy"}
+                  fetchPriority={i === 0 ? "high" : "low"}
                   decoding="async"
+                  data-sequence-ready={i === 0 ? "true" : "false"}
+                  onLoad={() => markImageSettled(i)}
+                  onError={() => markImageSettled(i)}
                 />
               </button>
             </figure>

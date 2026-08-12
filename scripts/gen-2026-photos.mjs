@@ -3,10 +3,10 @@
  * -------------------
  * One-shot generator for the 2026 photo refresh.
  *
- * Reads the delivered photo set ("Updated Website Photos 7.27.26"), copies each
- * image into /public/images/2026/<section>/ with normalized names, reads its
- * true pixel dimensions with macOS `sips`, and regenerates the content files so
- * every photo tab references ONLY the new imagery:
+ * Reads the delivered photo set ("Updated Website Photos 7.27.26"), writes
+ * web-sized copies into /public/images/2026/<section>/ with normalized names,
+ * reads their true pixel dimensions with macOS `sips`, and regenerates the
+ * content files so every photo tab references ONLY the new imagery:
  *
  *   Inside          -> content/commissions.ts   (2. INSIDE)
  *   Outside         -> content/personal.ts      (3. OUTSIDE)
@@ -16,7 +16,7 @@
  *
  * Run from the Next project root:  node scripts/gen-2026-photos.mjs
  */
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import {
   readdirSync,
   copyFileSync,
@@ -31,6 +31,8 @@ const PROJECT = process.cwd();
 const SRC = path.resolve(PROJECT, "..", "Updated Website Photos 7.27.26");
 const OUT_DIR = path.join(PROJECT, "public", "images", "2026");
 const CONTENT = path.join(PROJECT, "content");
+const MAX_EDGE = 2560;
+const JPEG_QUALITY = 80;
 
 if (!existsSync(SRC)) {
   console.error(`Source folder not found: ${SRC}`);
@@ -39,9 +41,10 @@ if (!existsSync(SRC)) {
 
 /** True pixel dimensions via macOS sips (no external deps). */
 function dims(file) {
-  const out = execSync(
-    `sips -g pixelWidth -g pixelHeight ${JSON.stringify(file)}`,
-    { encoding: "utf8" }
+  const out = execFileSync(
+    "sips",
+    ["-g", "pixelWidth", "-g", "pixelHeight", file],
+    { encoding: "utf8" },
   );
   const w = Number(out.match(/pixelWidth:\s*(\d+)/)?.[1]);
   const h = Number(out.match(/pixelHeight:\s*(\d+)/)?.[1]);
@@ -50,13 +53,44 @@ function dims(file) {
 }
 
 const IMG_RE = /\.(jpe?g|png)$/i;
+const JPEG_RE = /\.jpe?g$/i;
 const numOf = (name) => {
   const m = name.match(/(\d+)/);
   return m ? Number(m[1]) : 0;
 };
 
 /**
- * Copy + measure one section's images.
+ * Write a browser-ready JPEG without modifying the delivered source photo.
+ * Existing JPEGs at or below the cap are copied byte-for-byte.
+ */
+function writeWebCopy(from, to) {
+  const source = dims(from);
+  const needsResize = Math.max(source.w, source.h) > MAX_EDGE;
+
+  if (!needsResize && JPEG_RE.test(from)) {
+    copyFileSync(from, to);
+  } else {
+    const args = [];
+    if (needsResize) args.push("-Z", String(MAX_EDGE));
+    args.push(
+      "-s",
+      "format",
+      "jpeg",
+      "-s",
+      "formatOptions",
+      String(JPEG_QUALITY),
+      from,
+      "--out",
+      to,
+    );
+    execFileSync("sips", args, { stdio: "ignore" });
+  }
+
+  return dims(to);
+}
+
+/**
+ * Create web copies + measure one section's output images.
  * Returns [{ src, width, height }] in numeric filename order.
  */
 function processSection(srcSub, prefix) {
@@ -74,8 +108,7 @@ function processSection(srcSub, prefix) {
     const destName = `${prefix}-${n}.jpg`;
     const from = path.join(dir, f);
     const to = path.join(destDir, destName);
-    copyFileSync(from, to);
-    const { w, h } = dims(from);
+    const { w, h } = writeWebCopy(from, to);
     return { src: `/images/2026/${prefix}/${destName}`, width: w, height: h };
   });
 }
@@ -161,8 +194,7 @@ counts.elevator = projectFile({
 {
   const lpFrom = path.join(SRC, "LP.jpg");
   const lpTo = path.join(OUT_DIR, "lp.jpg");
-  copyFileSync(lpFrom, lpTo);
-  const { w, h } = dims(lpFrom);
+  const { w, h } = writeWebCopy(lpFrom, lpTo);
   const home = `import type { HomeCell } from "./types";
 
 /*

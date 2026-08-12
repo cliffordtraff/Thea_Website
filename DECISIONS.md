@@ -138,14 +138,15 @@ silently. Each entry: **Decision → Why → How to reverse.**
   (as before), or change `.img { object-fit: cover }` to `contain` in
   `Hero.module.css` to keep the full-bleed stage but stop cropping.
 
-### D13. Image performance: next/image everywhere + capped masters + AVIF
-- **Decision:** Three linked changes so the photo-heavy galleries ship small
+### D13. Image performance: responsive delivery + capped masters + AVIF
+- **Decision:** Four linked changes so the photo-heavy galleries ship small
   images: (1) the filmstrip (`FilmstripGallery.tsx`, used by the home index and
   every photo section) renders through **`next/image`** instead of a plain
   `<img>`, with a per-image `sizes` derived from the frame height × the photo's
-  aspect ratio; (2) `gen-photos.mjs` resizes each web copy to a **2560px long
-  edge at JPEG q80** on import (`MAX_EDGE` / `JPEG_QUALITY`), recording the
-  *output* dimensions in content; (3) `next.config` enables **AVIF then WebP**.
+  aspect ratio; (2) the photo import scripts resize each web copy to a **2560px
+  long edge at JPEG q80** (`MAX_EDGE` / `JPEG_QUALITY`), recording the *output*
+  dimensions in content; (3) `next.config` enables **AVIF then WebP**; (4) the
+  full-screen lightbox uses responsive `next/image` output at **quality 90**.
 - **Why:** The filmstrip previously served the raw originals (up to 4480×6720 /
   ~15 MB each) at full resolution to every device — `next/image`'s resizing and
   format negotiation were being bypassed entirely. Measured on the largest photo
@@ -154,9 +155,13 @@ silently. Each entry: **Decision → Why → How to reverse.**
   ceiling because `next/image` never serves anything larger than a Retina
   viewport, and it keeps `public/images/archive` from bloating (408 MB → 110 MB).
   The true originals are untouched in `../Photos Downloaded from Website/`.
-- **Reverse:** Raise/remove `MAX_EDGE` and re-run `node scripts/gen-photos.mjs`;
-  drop `formats` from `next.config`; or set `unoptimized` on the filmstrip
-  `<Image>` to go back to raw files. Aspect ratios and content are unaffected.
+  On navigation, the first filmstrip photo has sole high priority; later files
+  are revealed only as a contiguous left-to-right ready sequence. Desktop also
+  warms a low-priority look-ahead after the first request settles.
+- **Reverse:** Raise/remove `MAX_EDGE` and re-run the relevant photo import script;
+  drop `formats` from `next.config`; set `unoptimized` on the filmstrip
+  `<Image>`; or restore a plain `<img>` in `GalleryLightbox.tsx` to go back to
+  raw files. Aspect ratios and content are unaffected.
 
 ### D1. Font: EB Garamond as a stand-in for Sabon
 - **Decision:** Use **EB Garamond** (self-hosted via `next/font/google`) for all

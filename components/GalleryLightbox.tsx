@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   useCallback,
   useEffect,
@@ -143,16 +144,16 @@ export function GalleryLightbox({ children }: { children: React.ReactNode }) {
                 className={styles.figure}
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Plain <img>: dynamic full-size view, loaded on demand.
-                    next/image optimization isn't needed for a single on-demand
-                    enlargement, and this keeps the client component dependency-free. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                {/* Serve the full-screen photograph responsively at high
+                    quality. The source website JPEG is never modified. */}
+                <Image
                   key={current.src}
                   src={current.src}
                   width={current.w}
                   height={current.h}
                   alt={current.alt}
+                  sizes="100vw"
+                  quality={90}
                   className={styles.image}
                 />
               </figure>
