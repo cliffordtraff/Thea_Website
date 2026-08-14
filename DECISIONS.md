@@ -5,6 +5,23 @@ silently. Each entry: **Decision → Why → How to reverse.**
 
 ---
 
+### D21. Search discovery, real-user performance, and portfolio interaction events
+- **Decision:** Publish native App Router `sitemap.xml` and `robots.txt` routes;
+  install `@vercel/speed-insights` and render `<SpeedInsights />` once in the
+  root layout; and record anonymous Vercel Web Analytics events for contact
+  actions (`email`, `phone`, or `instagram`, plus their page location) and
+  gallery lightbox opens (route plus one-based image position). Contact details
+  themselves are never included in event properties.
+- **Why:** Pageviews alone cannot show whether a visitor tried to contact Thea
+  or engaged with a photograph. Speed Insights adds real-user Core Web Vitals
+  for this image-heavy portfolio, while the metadata routes give search engines
+  an explicit canonical host and list of public portfolio pages. The single
+  added dependency is Vercel's platform-native performance collector and is
+  rendered only once.
+- **Reverse:** Remove `app/sitemap.ts`, `app/robots.ts`, `TrackedLink` usage and
+  the `gallery_open` call; remove `<SpeedInsights />` and its import from the
+  root layout; then uninstall `@vercel/speed-insights`.
+
 ### D20. Vercel Web Analytics for first-party traffic measurement
 - **Decision:** Install `@vercel/analytics` and render its App Router
   `<Analytics />` component once in the root layout. Keep the existing Google

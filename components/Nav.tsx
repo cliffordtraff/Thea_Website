@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TrackedLink } from "@/components/TrackedLink";
 import { nav, site } from "@/content/site";
 import styles from "./Nav.module.css";
 
@@ -43,14 +44,16 @@ export function Nav({
           return (
             <li key={item.key}>
               {item.external ? (
-                <a
+                <TrackedLink
                   href={item.href}
                   className={styles.link}
                   target="_blank"
                   rel="noopener noreferrer"
+                  eventName="contact_click"
+                  eventProperties={{ method: "instagram", location: "navigation" }}
                 >
                   {item.label}
-                </a>
+                </TrackedLink>
               ) : (
                 <Link
                   href={item.href}

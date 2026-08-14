@@ -3,6 +3,7 @@ import type { NavItem } from "./types";
 /** Site-level metadata and navigation. */
 export const site = {
   name: "Thea Traff",
+  url: "https://theatraff.com",
   /** Displayed title treatment (letter-spaced small caps handled in CSS). */
   title: "Thea Traff",
   description:

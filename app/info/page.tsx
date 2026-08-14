@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SiteFrame } from "@/components/SiteFrame";
 import { Figure } from "@/components/Figure";
+import { TrackedLink } from "@/components/TrackedLink";
 import { info } from "@/content/info";
 import styles from "./info.module.css";
 
@@ -31,20 +32,36 @@ export default function InfoPage() {
 
           <address className={styles.contact}>
             <div>
-              <span className={styles.label}>Email:</span> {info.contact.email}
+              <span className={styles.label}>Email:</span>{" "}
+              <TrackedLink
+                href={`mailto:${info.contact.email}`}
+                eventName="contact_click"
+                eventProperties={{ method: "email", location: "info" }}
+              >
+                {info.contact.email}
+              </TrackedLink>
             </div>
             <div>
-              <span className={styles.label}>Cell:</span> {info.contact.phone}
+              <span className={styles.label}>Cell:</span>{" "}
+              <TrackedLink
+                href={`tel:${info.contact.phone.replace(/\D/g, "")}`}
+                eventName="contact_click"
+                eventProperties={{ method: "phone", location: "info" }}
+              >
+                {info.contact.phone}
+              </TrackedLink>
             </div>
             <div>
               <span className={styles.label}>Instagram:</span>{" "}
-              <a
+              <TrackedLink
                 href="https://www.instagram.com/theatraff"
                 target="_blank"
                 rel="noopener noreferrer"
+                eventName="contact_click"
+                eventProperties={{ method: "instagram", location: "info" }}
               >
                 {info.contact.instagram}
-              </a>
+              </TrackedLink>
             </div>
           </address>
 

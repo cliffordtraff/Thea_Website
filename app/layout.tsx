@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { EB_Garamond } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { site } from "@/content/site";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ScrollTopOnNavigate } from "@/components/ScrollTopOnNavigate";
@@ -24,6 +25,7 @@ const googleAnalyticsId =
   process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-SRVDMHMB5M";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: {
     default: site.name,
     template: `%s — ${site.name}`,
@@ -65,6 +67,7 @@ export default function RootLayout({
         <PreventActiveTabReclick />
         <ThemeToggle />
         <Analytics />
+        <SpeedInsights />
       </body>
       <GoogleAnalytics gaId={googleAnalyticsId} />
     </html>
