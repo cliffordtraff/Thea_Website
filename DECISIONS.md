@@ -5,6 +5,19 @@ silently. Each entry: **Decision → Why → How to reverse.**
 
 ---
 
+### D20. Vercel Web Analytics for first-party traffic measurement
+- **Decision:** Install `@vercel/analytics` and render its App Router
+  `<Analytics />` component once in the root layout. Keep the existing Google
+  Analytics integration in place; Vercel Analytics is an additional source of
+  privacy-friendly pageview and traffic-source data, with no custom events in
+  this initial integration.
+- **Why:** The site is deployed on Vercel, so the first-party integration is a
+  small, platform-native way to see aggregate traffic without adding another
+  analytics configuration layer. Recording the package here satisfies the
+  repository rule that every new dependency has an explicit justification.
+- **Reverse:** Remove `<Analytics />` and its import from `app/layout.tsx`, then
+  uninstall `@vercel/analytics`.
+
 ### D19. Favicon: the wordmark's italic "T", as a baked outline
 - **Decision:** The site icon is the capital "T" from "THEA TRAFF", set in the
   wordmark's exact typography — EB Garamond, weight 400, italic, uppercase

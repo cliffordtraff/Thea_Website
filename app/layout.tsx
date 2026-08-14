@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { EB_Garamond } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/next";
 import { site } from "@/content/site";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ScrollTopOnNavigate } from "@/components/ScrollTopOnNavigate";
@@ -63,6 +64,7 @@ export default function RootLayout({
         <ScrollTopOnNavigate />
         <PreventActiveTabReclick />
         <ThemeToggle />
+        <Analytics />
       </body>
       <GoogleAnalytics gaId={googleAnalyticsId} />
     </html>
