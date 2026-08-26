@@ -1,0 +1,33 @@
+.controls {
+  display: grid;
+  gap: 1.25rem;
+  justify-items: start;
+}
+
+.status {
+  margin: 0;
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+  line-height: 1.35;
+}
+
+.button {
+  appearance: none;
+  border: 1px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  padding: 0.65rem 0.9rem;
+}
+
+.button:hover,
+.button:focus-visible {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}

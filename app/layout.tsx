@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { EB_Garamond } from "next/font/google";
-import { GoogleAnalytics } from "@next/third-parties/google";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { site } from "@/content/site";
+import { AnalyticsProviders } from "@/components/AnalyticsProviders";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ScrollTopOnNavigate } from "@/components/ScrollTopOnNavigate";
 import { PreventActiveTabReclick } from "@/components/PreventActiveTabReclick";
@@ -20,9 +18,6 @@ const serif = EB_Garamond({
   display: "swap",
   variable: "--font-serif",
 });
-
-const googleAnalyticsId =
-  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-SRVDMHMB5M";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -66,10 +61,8 @@ export default function RootLayout({
         <ScrollTopOnNavigate />
         <PreventActiveTabReclick />
         <ThemeToggle />
-        <Analytics />
-        <SpeedInsights />
+        <AnalyticsProviders />
       </body>
-      <GoogleAnalytics gaId={googleAnalyticsId} />
     </html>
   );
 }

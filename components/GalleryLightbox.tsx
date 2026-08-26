@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { track } from "@vercel/analytics";
+import { trackTheaEvent } from "@/lib/analytics";
 import {
   useCallback,
   useEffect,
@@ -78,7 +78,7 @@ export function GalleryLightbox({ children }: { children: React.ReactNode }) {
       }));
       const i = nodes.indexOf(trigger as HTMLElement);
       lastFocus.current = document.activeElement as HTMLElement;
-      track("gallery_open", {
+      trackTheaEvent("gallery_open", {
         path: window.location.pathname,
         image_index: (i >= 0 ? i : 0) + 1,
       });
