@@ -5,6 +5,28 @@ silently. Each entry: **Decision → Why → How to reverse.**
 
 ---
 
+### D22. Serve a pre-sized first photograph; warm only three more initially
+- **Decision:** Each gallery route serves a sharp, route-specific AVIF for its
+  first photograph with a JPEG fallback. Inside uses a 1200 px landscape
+  derivative; the narrower first photographs on Outside, Dance, and Elevator
+  Series use 640 px portrait derivatives. These are final gallery images, not
+  blurred placeholders. Clicking still opens the original source through the
+  existing quality-90 responsive lightbox. After the first request settles,
+  desktop warms only the next three photographs at low priority; the one-
+  viewport look-ahead expands only after the visitor advances.
+- **Why:** Small static derivatives avoid both runtime image-optimizer latency
+  and the much larger HTML transfer caused by embedding base64 image data. The
+  reduced initial warm batch avoids immediately competing for nine more
+  photographs. The derivatives are sized above their usual CSS display width,
+  preserving a sharp normal view while keeping enlargement on the original,
+  high-resolution path.
+- **Regeneration:** Run `npm run gen:first-frame-images` on a machine with
+  `ffmpeg` and the `libsvtav1` encoder after changing a gallery's first photo.
+  No runtime or npm dependency is added.
+- **Reverse:** Remove `lib/first-frame-image.ts`, restore the first
+  `next/image` request, delete `public/images/first-frame`, and raise
+  `INITIAL_DESKTOP_WARM_AHEAD` or remove its pre-interaction cap.
+
 ### D21. Search discovery, real-user performance, and portfolio interaction events
 - **Decision:** Publish native App Router `sitemap.xml` and `robots.txt` routes;
   install `@vercel/speed-insights` and render `<SpeedInsights />` once in the

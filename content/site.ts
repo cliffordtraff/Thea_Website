@@ -7,8 +7,7 @@ export const site = {
   /** Displayed title treatment (letter-spaced small caps handled in CSS). */
   title: "Thea Traff",
   description:
-    "Proof-of-concept editorial photography portfolio — original build, placeholder imagery.",
-  /** Placeholder copyright line (year kept generic for the POC). */
+    "Thea Traff is a New York City photographer working across editorial, portraiture, dance, and commissioned projects.",
   copyright: "© Thea Traff",
 };
 

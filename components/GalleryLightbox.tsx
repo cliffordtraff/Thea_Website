@@ -35,6 +35,7 @@ interface Item {
 
 export function GalleryLightbox({ children }: { children: React.ReactNode }) {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
   const lastFocus = useRef<HTMLElement | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -48,7 +49,6 @@ export function GalleryLightbox({ children }: { children: React.ReactNode }) {
 
   const close = useCallback(() => {
     setIndex(-1);
-    lastFocus.current?.focus?.();
   }, []);
 
   const next = useCallback(
@@ -93,17 +93,46 @@ export function GalleryLightbox({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Tab") {
+        const controls = Array.from(
+          overlayRef.current?.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+          ) ?? [],
+        );
+        const first = controls[0];
+        const last = controls.at(-1);
+        if (!first || !last) return;
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+        return;
+      }
+
       if (e.key === "Escape") close();
       else if (e.key === "ArrowRight") next();
       else if (e.key === "ArrowLeft") prev();
+      else return;
+
+      e.preventDefault();
+      e.stopPropagation();
     };
     document.addEventListener("keydown", onKey);
+    const page = wrapRef.current;
+    const wasInert = page?.inert ?? false;
+    if (page) page.inert = true;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     closeRef.current?.focus();
     return () => {
       document.removeEventListener("keydown", onKey);
+      if (page) page.inert = wasInert;
       document.body.style.overflow = prevOverflow;
+      lastFocus.current?.focus?.();
     };
   }, [open, close, next, prev]);
 
@@ -115,10 +144,12 @@ export function GalleryLightbox({ children }: { children: React.ReactNode }) {
       {mounted && open && current
         ? createPortal(
             <div
+              ref={overlayRef}
               className={styles.overlay}
               role="dialog"
               aria-modal="true"
               aria-label="Image viewer"
+              data-gallery-lightbox="open"
               onClick={close}
             >
               <button

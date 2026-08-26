@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "gen:placeholders": "node scripts/gen-placeholders.mjs"
+    "gen:placeholders": "node scripts/gen-placeholders.mjs",
+    "gen:first-frame-images": "node scripts/gen-first-frame-images.mjs"
   },
   "dependencies": {
     "@next/third-parties": "^16.3.0",

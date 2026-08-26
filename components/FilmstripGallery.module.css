@@ -43,6 +43,11 @@
   cursor: zoom-in;
 }
 
+.picture {
+  display: block;
+  height: 100%;
+}
+
 /* Height-driven sizing: each photo fills the frame height and takes whatever
    width its true aspect ratio needs — a real filmstrip of mixed orientations. */
 .img {
@@ -180,6 +185,11 @@
   }
 
   .trigger {
+    height: auto;
+    width: 100%;
+  }
+
+  .picture {
     height: auto;
     width: 100%;
   }
