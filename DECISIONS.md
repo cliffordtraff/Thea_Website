@@ -9,8 +9,11 @@ silently. Each entry: **Decision → Why → How to reverse.**
 - **Decision:** Gallery HTML exposes a real URL only for photo one. A parser-time
   loader measures that request: slow/save-data sessions request photos two,
   three, and four strictly in order, while fast sessions release those three in
-  parallel after photo one settles. Later desktop frames follow the existing
-  one-viewport look-ahead through the same queue; mobile frames enter it through
+  parallel after photo one settles. Later desktop frames normally follow the
+  one-viewport look-ahead through the same queue. After a deliberate fast
+  gesture, a debounced three-photo destination window starts in parallel and
+  the filmstrip holds its last ready photograph until the destination is ready,
+  preventing an empty viewport. Mobile frames enter the serial queue through
   `IntersectionObserver`. Photo one uses one per-gallery balanced AVIF/JPEG
   source and is never upgraded after loading. Photos two through four have
   build-generated 640, 960, 1200, and source-width candidates: constrained or

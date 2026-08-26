@@ -82,6 +82,15 @@ const galleryLoader = String.raw`
     if (image.complete && (image.currentSrc || image.src)) queueMicrotask(finish);
   };
 
+  const loadParallel = (state, image) => {
+    state.pending += 1;
+    updateIdle(state);
+    observe(state, image, () => {
+      state.pending -= 1;
+      updateIdle(state);
+    });
+  };
+
   const drain = (state) => {
     if (state.active || state.mode !== "slow") return;
     const image = state.queue.shift();
@@ -129,34 +138,41 @@ const galleryLoader = String.raw`
       images.forEach((image) => {
         if (state.requested.has(image)) return;
         state.requested.add(image);
-        state.pending += 1;
-        updateIdle(state);
-        observe(state, image, () => {
-          state.pending -= 1;
-          updateIdle(state);
-        });
+        loadParallel(state, image);
       });
+      return;
+    }
+
+    // User-visible work outranks the background serial queue. A fast desktop
+    // gesture can cross several frames before one hotel-Wi-Fi request finishes;
+    // start the destination window in parallel and allow those photographs to
+    // reveal independently. The initial opening batch never uses this path.
+    if (urgent) {
+      images.forEach((image) => {
+        state.urgent.add(image);
+        if (state.requested.has(image)) {
+          const queuedIndex = state.queue.indexOf(image);
+          if (queuedIndex < 0) return;
+          state.queue.splice(queuedIndex, 1);
+        } else {
+          state.requested.add(image);
+        }
+        loadParallel(state, image);
+      });
+      updateIdle(state);
+      drain(state);
       return;
     }
 
     const queued = [];
     images.forEach((image) => {
       if (state.requested.has(image)) {
-        if (urgent) {
-          state.urgent.add(image);
-          const queuedIndex = state.queue.indexOf(image);
-          if (queuedIndex >= 0) {
-            state.queue.splice(queuedIndex, 1);
-            state.queue.unshift(image);
-          }
-        }
         return;
       }
       state.requested.add(image);
-      if (urgent) state.urgent.add(image);
       queued.push(image);
     });
-    state.queue = urgent ? queued.concat(state.queue) : state.queue.concat(queued);
+    state.queue = state.queue.concat(queued);
     updateIdle(state);
     drain(state);
   };
@@ -305,11 +321,7 @@ const galleryLoader = String.raw`
       if (nextMode === "fast") {
         const queued = state.queue.splice(0);
         queued.forEach((image) => {
-          state.pending += 1;
-          observe(state, image, () => {
-            state.pending -= 1;
-            updateIdle(state);
-          });
+          loadParallel(state, image);
         });
       }
       updateIdle(state);
