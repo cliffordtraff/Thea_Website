@@ -10,6 +10,12 @@
   line-height: 1.35;
 }
 
+.status strong {
+  font-weight: 400;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
 .button {
   appearance: none;
   border: 1px solid currentColor;

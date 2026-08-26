@@ -1,0 +1,674 @@
+{
+  "/images/2026/inside/inside-01.jpg": {
+    "sourceHash": "ab24a5309f3b9c408488c75c7c85577446649ed7c1432ffe32d75f786d791477",
+    "sourceWidth": 1920,
+    "sourceHeight": 1371,
+    "first": true,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/inside-01-1200.097bb8aa5f46.avif",
+          "width": 1200,
+          "bytes": 10724
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/inside-01-1200.1e91d5bfaa99.jpg",
+          "width": 1200,
+          "bytes": 42637
+        }
+      ]
+    }
+  },
+  "/images/2026/inside/inside-02.jpg": {
+    "sourceHash": "8c11fb15587bacf8ba27fdcbb5d9fc8df2888fd2cffa33748306fd6f857e7081",
+    "sourceWidth": 1200,
+    "sourceHeight": 1500,
+    "first": false,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/inside-02-640.1261944d906c.avif",
+          "width": 640,
+          "bytes": 4975
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-02-960.24e440fd1ff4.avif",
+          "width": 960,
+          "bytes": 8036
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-02-1200.51c5bd9bb9eb.avif",
+          "width": 1200,
+          "bytes": 12640
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/inside-02-640.346e780bf9ca.jpg",
+          "width": 640,
+          "bytes": 20783
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-02-960.a7eb4e3dffa8.jpg",
+          "width": 960,
+          "bytes": 39306
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-02-1200.cb80f7794bfc.jpg",
+          "width": 1200,
+          "bytes": 57041
+        }
+      ]
+    }
+  },
+  "/images/2026/inside/inside-03.jpg": {
+    "sourceHash": "b8776b952a3b0ade9672db93ef86c5f57454ef41c02f1d2cd7edd3c40fa7f80a",
+    "sourceWidth": 1371,
+    "sourceHeight": 1920,
+    "first": false,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/inside-03-640.055690d66d1d.avif",
+          "width": 640,
+          "bytes": 25036
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-03-960.e2455dfd067b.avif",
+          "width": 960,
+          "bytes": 43581
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-03-1200.6981df2fe604.avif",
+          "width": 1200,
+          "bytes": 72974
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-03-1368.5d24dd7776f7.avif",
+          "width": 1368,
+          "bytes": 85793
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/inside-03-640.d2da48d53b1b.jpg",
+          "width": 640,
+          "bytes": 86736
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-03-960.b3d45a24afbb.jpg",
+          "width": 960,
+          "bytes": 162722
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-03-1200.b67928b55b12.jpg",
+          "width": 1200,
+          "bytes": 227391
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-03-1368.a466229bbd1c.jpg",
+          "width": 1368,
+          "bytes": 276583
+        }
+      ]
+    }
+  },
+  "/images/2026/inside/inside-04.jpg": {
+    "sourceHash": "7db23a2747a4a7b7e123241cf832c4f8ff1f7b053b6d22e1783e52f9b09d6faa",
+    "sourceWidth": 1536,
+    "sourceHeight": 1920,
+    "first": false,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/inside-04-640.3b8ecc5766ec.avif",
+          "width": 640,
+          "bytes": 7371
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-04-960.d352adc1bddc.avif",
+          "width": 960,
+          "bytes": 11324
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-04-1200.b2c9e16b1e6d.avif",
+          "width": 1200,
+          "bytes": 16911
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-04-1536.0022545af035.avif",
+          "width": 1536,
+          "bytes": 21876
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/inside-04-640.eb1d327bb848.jpg",
+          "width": 640,
+          "bytes": 27032
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-04-960.578c053a5abc.jpg",
+          "width": 960,
+          "bytes": 46640
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-04-1200.6d15dfee1f2e.jpg",
+          "width": 1200,
+          "bytes": 63627
+        },
+        {
+          "src": "/images/gallery-fast-path/inside-04-1536.e51bf58dd330.jpg",
+          "width": 1536,
+          "bytes": 90904
+        }
+      ]
+    }
+  },
+  "/images/2026/outside/outside-01.jpg": {
+    "sourceHash": "abd663c7c0cf3b60ba6781f52fe73f42469613221d9ec9ddf475363a1e696afb",
+    "sourceWidth": 1371,
+    "sourceHeight": 1920,
+    "first": true,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/outside-01-960.e9c0ca8f7169.avif",
+          "width": 960,
+          "bytes": 31237
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/outside-01-960.fe2944849658.jpg",
+          "width": 960,
+          "bytes": 88243
+        }
+      ]
+    }
+  },
+  "/images/2026/outside/outside-02.jpg": {
+    "sourceHash": "b099451322888398ba5d1e7184b45a93bc41d7436c683f850b4c839360564ac7",
+    "sourceWidth": 1440,
+    "sourceHeight": 1920,
+    "first": false,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/outside-02-640.29ff57a73b91.avif",
+          "width": 640,
+          "bytes": 42413
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-02-960.81b6d496b6a2.avif",
+          "width": 960,
+          "bytes": 64507
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-02-1200.f00a4faa1ed6.avif",
+          "width": 1200,
+          "bytes": 94801
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-02-1440.9b10eb6a512c.avif",
+          "width": 1440,
+          "bytes": 110977
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/outside-02-640.8f5dab005def.jpg",
+          "width": 640,
+          "bytes": 92202
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-02-960.3ec01503e062.jpg",
+          "width": 960,
+          "bytes": 156400
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-02-1200.d556fcdfbe74.jpg",
+          "width": 1200,
+          "bytes": 208378
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-02-1440.14fd0b2e0e51.jpg",
+          "width": 1440,
+          "bytes": 263137
+        }
+      ]
+    }
+  },
+  "/images/2026/outside/outside-03.jpg": {
+    "sourceHash": "30f486cefc133fb94120f99341ba9ff5b3056e4b7bca0d96a1045d75866a4b7d",
+    "sourceWidth": 1281,
+    "sourceHeight": 1920,
+    "first": false,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/outside-03-640.d1f90c094438.avif",
+          "width": 640,
+          "bytes": 29607
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-03-960.df04762ac85f.avif",
+          "width": 960,
+          "bytes": 49011
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-03-1200.1a63da17f693.avif",
+          "width": 1200,
+          "bytes": 75032
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-03-1280.4fab0db44454.avif",
+          "width": 1280,
+          "bytes": 79898
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/outside-03-640.35e21150b6d0.jpg",
+          "width": 640,
+          "bytes": 67480
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-03-960.ff2529b6a70f.jpg",
+          "width": 960,
+          "bytes": 119770
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-03-1200.4d7a9ca20269.jpg",
+          "width": 1200,
+          "bytes": 163808
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-03-1280.ec9b0bef840d.jpg",
+          "width": 1280,
+          "bytes": 178256
+        }
+      ]
+    }
+  },
+  "/images/2026/outside/outside-04.jpg": {
+    "sourceHash": "6872363281350621c7c230417930895f1d994815be7a1727cdf5a72ef06a2371",
+    "sourceWidth": 1600,
+    "sourceHeight": 2000,
+    "first": false,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/outside-04-640.c99b1ce5078b.avif",
+          "width": 640,
+          "bytes": 16826
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-04-960.b68399a892ae.avif",
+          "width": 960,
+          "bytes": 36598
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-04-1200.b3e2129a8dbe.avif",
+          "width": 1200,
+          "bytes": 66333
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-04-1600.d9c7109491de.avif",
+          "width": 1600,
+          "bytes": 107769
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/outside-04-640.20fcd2afe146.jpg",
+          "width": 640,
+          "bytes": 46234
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-04-960.d770a9fe73dc.jpg",
+          "width": 960,
+          "bytes": 97798
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-04-1200.1c377a7f713f.jpg",
+          "width": 1200,
+          "bytes": 147348
+        },
+        {
+          "src": "/images/gallery-fast-path/outside-04-1600.62b08bd16704.jpg",
+          "width": 1600,
+          "bytes": 244206
+        }
+      ]
+    }
+  },
+  "/images/2026/dance/dance-01.jpg": {
+    "sourceHash": "5e1a1926c198c89a1ad971ce8b84da5b28d45d01511a2ec19d66b7da06bebe61",
+    "sourceWidth": 1355,
+    "sourceHeight": 1897,
+    "first": true,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/dance-01-800.5ca690669748.avif",
+          "width": 800,
+          "bytes": 23865
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/dance-01-800.0c1d6c4938c2.jpg",
+          "width": 800,
+          "bytes": 158628
+        }
+      ]
+    }
+  },
+  "/images/2026/dance/dance-02.jpg": {
+    "sourceHash": "c2e8d0085f4d431d5506041862d6c632b10d6cdec0a5e40203772ac607701e5e",
+    "sourceWidth": 1371,
+    "sourceHeight": 1920,
+    "first": false,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/dance-02-640.2b9651d1a095.avif",
+          "width": 640,
+          "bytes": 7018
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-02-960.f862a2e9ade8.avif",
+          "width": 960,
+          "bytes": 10519
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-02-1200.c6c4ce4b16a3.avif",
+          "width": 1200,
+          "bytes": 15436
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-02-1368.f3a31f356c29.avif",
+          "width": 1368,
+          "bytes": 17356
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/dance-02-640.33375481a006.jpg",
+          "width": 640,
+          "bytes": 28591
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-02-960.028fd269591d.jpg",
+          "width": 960,
+          "bytes": 49521
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-02-1200.cefdf1a86e5e.jpg",
+          "width": 1200,
+          "bytes": 67715
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-02-1368.d5e07ec7b257.jpg",
+          "width": 1368,
+          "bytes": 81857
+        }
+      ]
+    }
+  },
+  "/images/2026/dance/dance-03.jpg": {
+    "sourceHash": "6d2f849704dd8dc0753d765f71fb7c3d66b4e3d95a1bbb0e9daa2dd5327a6783",
+    "sourceWidth": 1267,
+    "sourceHeight": 1900,
+    "first": false,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/dance-03-640.25647a91be21.avif",
+          "width": 640,
+          "bytes": 9175
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-03-960.922c60535cd8.avif",
+          "width": 960,
+          "bytes": 14541
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-03-1200.559e85fd042f.avif",
+          "width": 1200,
+          "bytes": 22651
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-03-1264.d50a9036787b.avif",
+          "width": 1264,
+          "bytes": 24067
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/dance-03-640.f25e7b354855.jpg",
+          "width": 640,
+          "bytes": 32988
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-03-960.62cf156551b1.jpg",
+          "width": 960,
+          "bytes": 61842
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-03-1200.edf086a9d881.jpg",
+          "width": 1200,
+          "bytes": 93484
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-03-1264.7e3a488b2cd4.jpg",
+          "width": 1264,
+          "bytes": 104466
+        }
+      ]
+    }
+  },
+  "/images/2026/dance/dance-05.jpg": {
+    "sourceHash": "45b7d20c3e4039288ae3937d6c26f49a0f8b75a5b10c2dcd2493280dd96b8b9e",
+    "sourceWidth": 1920,
+    "sourceHeight": 1372,
+    "first": false,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/dance-05-640.f88b1dea8422.avif",
+          "width": 640,
+          "bytes": 15133
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-05-960.6271f5d56ae2.avif",
+          "width": 960,
+          "bytes": 25293
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-05-1200.832b3dd3a01b.avif",
+          "width": 1200,
+          "bytes": 33517
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-05-1920.245d4d69aa53.avif",
+          "width": 1920,
+          "bytes": 82003
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/dance-05-640.d59d3b66c2af.jpg",
+          "width": 640,
+          "bytes": 36601
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-05-960.ddab1e771a19.jpg",
+          "width": 960,
+          "bytes": 64426
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-05-1200.76472725ac2e.jpg",
+          "width": 1200,
+          "bytes": 89512
+        },
+        {
+          "src": "/images/gallery-fast-path/dance-05-1920.86c471bd3def.jpg",
+          "width": 1920,
+          "bytes": 195622
+        }
+      ]
+    }
+  },
+  "/images/2026/elevator/elevator-01.jpg": {
+    "sourceHash": "7cdfae27f9849ca25821c23fe59d4c984e963cb424b1424188f539faeaa22b33",
+    "sourceWidth": 1178,
+    "sourceHeight": 1500,
+    "first": true,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/elevator-01-960.abd125bf6253.avif",
+          "width": 960,
+          "bytes": 10460
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/elevator-01-960.327a2038761e.jpg",
+          "width": 960,
+          "bytes": 54540
+        }
+      ]
+    }
+  },
+  "/images/2026/elevator/elevator-02.jpg": {
+    "sourceHash": "0b4ed33b8dddb338b3f3b57282224fe28cac8d0c73601571ef567e03cd0c0543",
+    "sourceWidth": 1178,
+    "sourceHeight": 1500,
+    "first": false,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/elevator-02-640.212c6c4e63f2.avif",
+          "width": 640,
+          "bytes": 28666
+        },
+        {
+          "src": "/images/gallery-fast-path/elevator-02-960.595b966a6d00.avif",
+          "width": 960,
+          "bytes": 55843
+        },
+        {
+          "src": "/images/gallery-fast-path/elevator-02-1176.8d972bb68d4b.avif",
+          "width": 1176,
+          "bytes": 90223
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/elevator-02-640.fa255c390dc2.jpg",
+          "width": 640,
+          "bytes": 70908
+        },
+        {
+          "src": "/images/gallery-fast-path/elevator-02-960.970d3602ac2a.jpg",
+          "width": 960,
+          "bytes": 140013
+        },
+        {
+          "src": "/images/gallery-fast-path/elevator-02-1176.09d38db5e31e.jpg",
+          "width": 1176,
+          "bytes": 193737
+        }
+      ]
+    }
+  },
+  "/images/2026/elevator/elevator-03.jpg": {
+    "sourceHash": "c0afd1bceeda3725652a89efe4555169b05e8ba9a14e491e01f9fa492b072e4f",
+    "sourceWidth": 1179,
+    "sourceHeight": 1500,
+    "first": false,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/elevator-03-640.2a26835d61a9.avif",
+          "width": 640,
+          "bytes": 11305
+        },
+        {
+          "src": "/images/gallery-fast-path/elevator-03-960.41f674c2149b.avif",
+          "width": 960,
+          "bytes": 20339
+        },
+        {
+          "src": "/images/gallery-fast-path/elevator-03-1176.884ed7b72f0a.avif",
+          "width": 1176,
+          "bytes": 32434
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/elevator-03-640.1ac536f4ff4f.jpg",
+          "width": 640,
+          "bytes": 43214
+        },
+        {
+          "src": "/images/gallery-fast-path/elevator-03-960.cafb47d4b3e8.jpg",
+          "width": 960,
+          "bytes": 80691
+        },
+        {
+          "src": "/images/gallery-fast-path/elevator-03-1176.8e4d7cd354aa.jpg",
+          "width": 1176,
+          "bytes": 110397
+        }
+      ]
+    }
+  },
+  "/images/2026/elevator/elevator-04.jpg": {
+    "sourceHash": "0ea274a497bd66cbefa0bece7c1e6f8ce3cc3d57203ac13e9960f9f42248cc53",
+    "sourceWidth": 1178,
+    "sourceHeight": 1500,
+    "first": false,
+    "formats": {
+      "avif": [
+        {
+          "src": "/images/gallery-fast-path/elevator-04-640.1f0b0feedc32.avif",
+          "width": 640,
+          "bytes": 24180
+        },
+        {
+          "src": "/images/gallery-fast-path/elevator-04-960.0161af4e93a1.avif",
+          "width": 960,
+          "bytes": 50874
+        },
+        {
+          "src": "/images/gallery-fast-path/elevator-04-1176.22b66c005049.avif",
+          "width": 1176,
+          "bytes": 80744
+        }
+      ],
+      "jpeg": [
+        {
+          "src": "/images/gallery-fast-path/elevator-04-640.cf9c244c73b4.jpg",
+          "width": 640,
+          "bytes": 60151
+        },
+        {
+          "src": "/images/gallery-fast-path/elevator-04-960.1d1fbbd29e99.jpg",
+          "width": 960,
+          "bytes": 124733
+        },
+        {
+          "src": "/images/gallery-fast-path/elevator-04-1176.857243f57922.jpg",
+          "width": 1176,
+          "bytes": 176607
+        }
+      ]
+    }
+  }
+}

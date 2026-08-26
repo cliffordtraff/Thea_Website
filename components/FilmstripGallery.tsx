@@ -3,15 +3,27 @@
 import { useCallback, useEffect, useRef } from "react";
 import Image, { getImageProps } from "next/image";
 import type { ImageAsset } from "@/content/types";
-import { getFirstFrameSources } from "@/lib/first-frame-image";
+import type {
+  GalleryFastPathSources,
+  GalleryImageCandidate,
+} from "@/lib/first-frame-image";
 import styles from "./FilmstripGallery.module.css";
 
-// Desktop visitors can move across several frames before native lazy loading
-// notices the transformed track. Warm only three photographs beyond the first
-// until the visitor actually advances, then keep one viewport beyond the
-// intended position ready. Mobile retains native lazy loading because its
-// vertical scroll gives the browser reliable proximity information and
-// bandwidth is more likely to be constrained.
+declare global {
+  interface Window {
+    __theaGalleryLoader?: {
+      start: (stage: HTMLElement) => unknown;
+      request: (
+        stage: HTMLElement,
+        images: Iterable<HTMLImageElement>,
+        options?: { urgent?: boolean },
+      ) => void;
+    };
+  }
+}
+
+// Photo one gets exclusive bandwidth. The next three are serial on a measured
+// slow session and parallel on a fast one; later requests follow proximity.
 const INITIAL_DESKTOP_WARM_AHEAD = 3;
 const DESKTOP_LOOKAHEAD_VIEWPORTS = 1;
 
@@ -28,7 +40,17 @@ const DESKTOP_LOOKAHEAD_VIEWPORTS = 1;
  * Dependency-free (see DECISIONS.md D3): a small wheel/touch/keyboard handler +
  * requestAnimationFrame loop, no GSAP/Locomotive/OverlayScrollbars.
  */
-export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
+function candidateSrcSet(candidates: GalleryImageCandidate[]) {
+  return candidates.map(({ src, width }) => `${src} ${width}w`).join(", ");
+}
+
+export function FilmstripGallery({
+  images,
+  openingFastPath,
+}: {
+  images: ImageAsset[];
+  openingFastPath: GalleryFastPathSources[];
+}) {
   const stageRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
@@ -79,6 +101,7 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
     const progress = progressRef.current;
     const hint = hintRef.current;
     if (!stage || !track) return;
+    window.__theaGalleryLoader?.start(stage);
 
     // Below 768px the gallery is a plain vertical stack (see
     // FilmstripGallery.module.css) — native page scroll, no scroll-jacking.
@@ -86,18 +109,71 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
     // scroll-jacking behavior as the viewport crosses that breakpoint (e.g.
     // rotating a tablet, resizing a window), not just once on mount.
     const mql = window.matchMedia("(min-width: 769px)");
-    let teardownDesktopBehavior: (() => void) | null = null;
+    let teardownResponsiveBehavior: (() => void) | null = null;
 
     const installDeferredSource = (img: HTMLImageElement) => {
+      img
+        .closest("picture")
+        ?.querySelectorAll<HTMLSourceElement>(
+          "source[data-deferred-srcset], source[data-deferred-srcset-slow], source[data-deferred-srcset-fast]",
+        )
+        .forEach((source) => {
+          const srcset =
+            source.dataset.deferredSrcsetFast ??
+            source.dataset.deferredSrcsetSlow ??
+            source.dataset.deferredSrcset;
+          if (srcset) source.srcset = srcset;
+          delete source.dataset.deferredSrcset;
+          delete source.dataset.deferredSrcsetSlow;
+          delete source.dataset.deferredSrcsetFast;
+        });
       const deferredSrc = img.dataset.deferredSrc;
       if (!deferredSrc) return;
 
-      const deferredSrcSet = img.dataset.deferredSrcset;
+      const deferredSrcSet =
+        img.dataset.deferredSrcsetFast ??
+        img.dataset.deferredSrcsetSlow ??
+        img.dataset.deferredSrcset;
       if (deferredSrcSet) img.srcset = deferredSrcSet;
       img.src = deferredSrc;
       delete img.dataset.deferredSrc;
       delete img.dataset.deferredSrcset;
+      delete img.dataset.deferredSrcsetSlow;
+      delete img.dataset.deferredSrcsetFast;
     };
+
+    const requestImages = (
+      imagesToRequest: HTMLImageElement[],
+      options?: { urgent?: boolean },
+    ) => {
+      const loader = window.__theaGalleryLoader;
+      if (loader) loader.request(stage, imagesToRequest, options);
+      else imagesToRequest.forEach(installDeferredSource);
+    };
+
+    const prefetchedFirstFrames = new Set<string>();
+    const onGalleryIntent = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      const link = target?.closest<HTMLAnchorElement>(
+        "a[data-gallery-first-frame]",
+      );
+      const href = link?.dataset.galleryFirstFrame;
+      if (
+        !href ||
+        document.documentElement.dataset.galleryConnection !== "fast" ||
+        stage.dataset.galleryQueueIdle !== "true" ||
+        prefetchedFirstFrames.has(href)
+      ) {
+        return;
+      }
+      prefetchedFirstFrames.add(href);
+      const prefetch = new window.Image();
+      prefetch.fetchPriority = "low";
+      prefetch.src = href;
+    };
+    document.addEventListener("pointerover", onGalleryIntent, { passive: true });
+    document.addEventListener("focusin", onGalleryIntent);
+    document.addEventListener("touchstart", onGalleryIntent, { passive: true });
 
     const attachDesktopBehavior = () => {
       // Motion state lives in refs, not React state — we mutate the transform
@@ -121,12 +197,12 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
       });
 
       const warmImage = (img: HTMLImageElement) => {
-        installDeferredSource(img);
         if (img.loading !== "lazy") return;
         // Look-ahead requests should start early without competing with the
         // first photograph's sole high-priority request.
         img.fetchPriority = "low";
         img.loading = "eager";
+        requestImages([img]);
       };
 
       const warmThrough = (offset: number) => {
@@ -150,9 +226,8 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
         });
       };
 
-      // Give the first photograph an uncontested head start. Once it settles,
-      // start the remaining initial buffer at low priority so a quick first
-      // gesture still cannot outrun the transformed filmstrip.
+      // The shared loader serializes this batch on slow sessions and releases
+      // it together only after a fast first-image measurement.
       const warmInitialBuffer = () => {
         firstRequestSettled = true;
         galleryImages
@@ -321,22 +396,45 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
     };
 
     const sync = () => {
-      teardownDesktopBehavior?.();
-      teardownDesktopBehavior = null;
+      teardownResponsiveBehavior?.();
+      teardownResponsiveBehavior = null;
       if (mql.matches) {
-        teardownDesktopBehavior = attachDesktopBehavior();
+        teardownResponsiveBehavior = attachDesktopBehavior();
       } else {
         // Mobile: clear any leftover inline transform from the desktop mode
         // so the track lays out as a plain vertical flow (see .module.css).
         track.style.transform = "";
         if (progress) progress.style.transform = "";
         if (hint) hint.dataset.hidden = "true";
-        // Release every source to native mobile lazy loading. Unlike the
-        // transformed desktop strip, normal vertical flow gives the browser
-        // reliable proximity information for the full page.
+        Array.from(track.querySelectorAll<HTMLImageElement>("img")).forEach(
+          (img, index) => {
+            if (img.complete && img.naturalWidth > 0) markImageSettled(index);
+          },
+        );
+        // Vertical scroll gives us reliable proximity. Keep URLs inert until
+        // their frames approach, then let the adaptive queue preserve order.
+        const observer = new IntersectionObserver(
+          (entries) => {
+            const nearby = entries
+              .filter((entry) => entry.isIntersecting)
+              .map((entry) => entry.target as HTMLImageElement);
+            const visible = nearby.filter((image) => {
+              const rect = image.getBoundingClientRect();
+              return rect.bottom > 0 && rect.top < window.innerHeight;
+            });
+            const approaching = nearby.filter(
+              (image) => !visible.includes(image),
+            );
+            if (visible.length) requestImages(visible, { urgent: true });
+            if (approaching.length) requestImages(approaching);
+            nearby.forEach((image) => observer.unobserve(image));
+          },
+          { rootMargin: "100% 0px" },
+        );
         track
           .querySelectorAll<HTMLImageElement>("img[data-deferred-src]")
-          .forEach(installDeferredSource);
+          .forEach((image) => observer.observe(image));
+        teardownResponsiveBehavior = () => observer.disconnect();
       }
     };
 
@@ -345,7 +443,10 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
 
     return () => {
       mql.removeEventListener("change", sync);
-      teardownDesktopBehavior?.();
+      teardownResponsiveBehavior?.();
+      document.removeEventListener("pointerover", onGalleryIntent);
+      document.removeEventListener("focusin", onGalleryIntent);
+      document.removeEventListener("touchstart", onGalleryIntent);
     };
   }, [firstSrc, images.length, markImageSettled]);
 
@@ -355,6 +456,7 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
       key={firstSrc}
       ref={stageRef}
       aria-label="Photo gallery"
+      data-gallery-stage
     >
       <div className={styles.track} ref={trackRef}>
         {images.map((image, i) => {
@@ -365,10 +467,9 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
           // DECISIONS.md D18) — frames are width-driven (full column width),
           // so the sizes hint switches to a plain viewport-width fraction.
           const ratio = (image.width / image.height).toFixed(3);
-          const sizes = `(max-width: 768px) 92vw, calc(75.39vh * ${ratio})`;
-          const firstFrameSources =
-            i === 0 ? getFirstFrameSources(image.src) : undefined;
-          const deferUntilAdvance = i > INITIAL_DESKTOP_WARM_AHEAD;
+          const sizes = `(max-width: 768px) calc(100vw - 2rem), calc(75.39vh * ${ratio})`;
+          const fastPathSources = openingFastPath[i];
+          const deferUntilAdvance = i > 0;
           const deferredProps = deferUntilAdvance
             ? getImageProps({
                 src: image.src,
@@ -379,6 +480,7 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
                 loading: "lazy",
                 fetchPriority: "low",
                 decoding: "async",
+                quality: 65,
               }).props
             : undefined;
           return (
@@ -396,25 +498,25 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
                 data-zoom-alt={image.alt}
                 aria-label={`Enlarge image: ${image.alt}`}
               >
-                {/* The first photograph is a pre-sized static AVIF with a JPEG
-                    fallback. It remains a small, high-priority request without
-                    bloating the HTML or relying on runtime image optimization.
-                    Remaining photographs use next/image → resized AVIF/WebP
-                    variants + responsive srcset.
+                {/* The first photograph is one balanced static AVIF with a JPEG
+                    fallback. Photos two through four stay inert until the
+                    connection gate installs either a 640px-only source set or
+                    the full responsive candidate set. Later photographs use
+                    next/image-generated AVIF/WebP candidates.
                     CSS still drives layout (height-driven on desktop,
                     width-driven in the mobile vertical stack) and keeps the
                     true aspect ratio; the width/height props only reserve
                     space (no CLS). The desktop effect starts its low-priority
                     look-ahead only after the first photograph settles. */}
-                {firstFrameSources ? (
+                {i === 0 && fastPathSources?.first ? (
                   <picture className={styles.picture}>
                     <source
-                      srcSet={firstFrameSources.avif}
+                      srcSet={fastPathSources.formats.avif[0].src}
                       type="image/avif"
                     />
                     <img
                       className={styles.img}
-                      src={firstFrameSources.jpeg}
+                      src={fastPathSources.formats.jpeg[0].src}
                       width={image.width}
                       height={image.height}
                       alt={image.alt}
@@ -422,7 +524,46 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
                       loading="eager"
                       fetchPriority="high"
                       decoding="async"
+                      data-gallery-image
+                      data-gallery-index={i}
                       data-sequence-ready="true"
+                      onLoad={() => markImageSettled(i)}
+                      onError={() => markImageSettled(i)}
+                    />
+                  </picture>
+                ) : fastPathSources ? (
+                  <picture className={styles.picture}>
+                    <source
+                      sizes={sizes}
+                      data-deferred-srcset-slow={candidateSrcSet(
+                        fastPathSources.formats.avif.slice(0, 1),
+                      )}
+                      data-deferred-srcset-fast={candidateSrcSet(
+                        fastPathSources.formats.avif,
+                      )}
+                      type="image/avif"
+                    />
+                    <img
+                      className={styles.img}
+                      width={image.width}
+                      height={image.height}
+                      alt={image.alt}
+                      draggable={false}
+                      loading="lazy"
+                      fetchPriority="low"
+                      decoding="async"
+                      sizes={sizes}
+                      data-deferred-src={fastPathSources.formats.jpeg[0].src}
+                      data-deferred-srcset-slow={candidateSrcSet(
+                        fastPathSources.formats.jpeg.slice(0, 1),
+                      )}
+                      data-deferred-srcset-fast={candidateSrcSet(
+                        fastPathSources.formats.jpeg,
+                      )}
+                      data-gallery-image
+                      data-gallery-index={i}
+                      data-sequence-ready="false"
+                      style={{ aspectRatio: `${image.width} / ${image.height}` }}
                       onLoad={() => markImageSettled(i)}
                       onError={() => markImageSettled(i)}
                     />
@@ -445,6 +586,8 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
                     decoding="async"
                     data-deferred-src={deferredProps.src}
                     data-deferred-srcset={deferredProps.srcSet}
+                    data-gallery-image
+                    data-gallery-index={i}
                     data-sequence-ready="false"
                     style={{ aspectRatio: `${image.width} / ${image.height}` }}
                     onLoad={() => markImageSettled(i)}
@@ -463,6 +606,9 @@ export function FilmstripGallery({ images }: { images: ImageAsset[] }) {
                     loading={i === 0 ? undefined : "lazy"}
                     fetchPriority={i === 0 ? "high" : "low"}
                     decoding="async"
+                    quality={65}
+                    data-gallery-image
+                    data-gallery-index={i}
                     data-sequence-ready={i === 0 ? "true" : "false"}
                     onLoad={() => markImageSettled(i)}
                     onError={() => markImageSettled(i)}

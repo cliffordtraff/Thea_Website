@@ -5,6 +5,7 @@ import { AnalyticsProviders } from "@/components/AnalyticsProviders";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ScrollTopOnNavigate } from "@/components/ScrollTopOnNavigate";
 import { PreventActiveTabReclick } from "@/components/PreventActiveTabReclick";
+import { GalleryImageBootstrap } from "@/components/GalleryImageBootstrap";
 import "./globals.css";
 
 /*
@@ -13,7 +14,7 @@ import "./globals.css";
  */
 const serif = EB_Garamond({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400"],
   style: ["normal", "italic"],
   display: "swap",
   variable: "--font-serif",
@@ -57,6 +58,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={serif.variable} suppressHydrationWarning>
       <body>
+        <GalleryImageBootstrap />
         {children}
         <ScrollTopOnNavigate />
         <PreventActiveTabReclick />

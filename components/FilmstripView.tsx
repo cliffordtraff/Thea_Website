@@ -2,6 +2,10 @@ import type { ImageAsset } from "@/content/types";
 import { GalleryLightbox } from "./GalleryLightbox";
 import { FilmstripGallery } from "./FilmstripGallery";
 import { Nav } from "./Nav";
+import {
+  getFirstFrameSources,
+  getGalleryFastPathSources,
+} from "@/lib/first-frame-image";
 import styles from "./FilmstripView.module.css";
 
 /**
@@ -22,8 +26,28 @@ export function FilmstripView({
   active?: string;
   title?: string;
 }) {
+  const firstFrame = images[0]
+    ? getFirstFrameSources(images[0].src)
+    : undefined;
+  const openingFastPath = images.slice(0, 4).map((image) => {
+    const sources = getGalleryFastPathSources(image.src);
+    if (!sources) {
+      throw new Error(`Missing generated gallery fast path for ${image.src}`);
+    }
+    return sources;
+  });
+
   return (
     <GalleryLightbox>
+      {firstFrame ? (
+        <link
+          rel="preload"
+          as="image"
+          href={firstFrame.avif}
+          type="image/avif"
+          fetchPriority="high"
+        />
+      ) : null}
       {title ? <h1 className="sr-only">{title}</h1> : null}
       {/* Rendered before the gallery in source order: irrelevant on desktop
           (fixed positioning ignores document flow), but on mobile — where
@@ -37,7 +61,7 @@ export function FilmstripView({
           active={active}
         />
       </div>
-      <FilmstripGallery images={images} />
+      <FilmstripGallery images={images} openingFastPath={openingFastPath} />
     </GalleryLightbox>
   );
 }

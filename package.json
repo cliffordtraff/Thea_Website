@@ -5,11 +5,13 @@
   "description": "Proof-of-concept editorial photography portfolio (Next.js App Router). Original code; no reference assets copied.",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "npm run check:image-budgets",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "gen:placeholders": "node scripts/gen-placeholders.mjs",
-    "gen:first-frame-images": "node scripts/gen-first-frame-images.mjs"
+    "gen:first-frame-images": "node scripts/gen-first-frame-images.mjs",
+    "check:image-budgets": "node scripts/check-image-budgets.mjs"
   },
   "dependencies": {
     "@next/third-parties": "^16.3.0",

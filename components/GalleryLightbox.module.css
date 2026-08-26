@@ -18,6 +18,13 @@
   animation: fade 180ms ease both;
 }
 
+.loadingStatus {
+  color: var(--color-lightbox-fg);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 @keyframes fade {
   from {
     opacity: 0;

@@ -23,7 +23,7 @@
   display: block;
   margin-top: 0.15rem;
   font-size: var(--fs-meta);
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text);

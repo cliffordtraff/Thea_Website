@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { TrackedLink } from "@/components/TrackedLink";
 import { nav, site } from "@/content/site";
+import { getGalleryFirstFrameForRoute } from "@/lib/first-frame-image";
 import styles from "./Nav.module.css";
 
 /**
@@ -21,6 +22,11 @@ export function Nav({
   variant?: "sidebar" | "overlay";
   titleAs?: "h1" | "link";
 }) {
+  const galleryRouteIsMounted =
+    active === "commissions" ||
+    active === "outside" ||
+    active === "dance" ||
+    active === "elevator-series";
   const title = (
     <Link href="/" className={styles.title}>
       {site.title}
@@ -41,6 +47,9 @@ export function Nav({
       <ul className={styles.list}>
         {nav.map((item) => {
           const isActive = item.key === active;
+          const galleryFirstFrame = item.external
+            ? undefined
+            : getGalleryFirstFrameForRoute(item.href);
           return (
             <li key={item.key}>
               {item.external ? (
@@ -57,6 +66,12 @@ export function Nav({
               ) : (
                 <Link
                   href={item.href}
+                  prefetch={
+                    galleryFirstFrame && galleryRouteIsMounted
+                      ? false
+                      : undefined
+                  }
+                  data-gallery-first-frame={galleryFirstFrame}
                   className={`${styles.link} ${isActive ? styles.active : ""}`}
                   aria-current={isActive ? "page" : undefined}
                 >

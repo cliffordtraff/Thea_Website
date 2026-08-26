@@ -5,7 +5,43 @@ silently. Each entry: **Decision → Why → How to reverse.**
 
 ---
 
+### D23. Adaptive first-photo-first delivery and immutable opening frames
+- **Decision:** Gallery HTML exposes a real URL only for photo one. A parser-time
+  loader measures that request: slow/save-data sessions request photos two,
+  three, and four strictly in order, while fast sessions release those three in
+  parallel after photo one settles. Later desktop frames follow the existing
+  one-viewport look-ahead through the same queue; mobile frames enter it through
+  `IntersectionObserver`. Photo one uses one per-gallery balanced AVIF/JPEG
+  source and is never upgraded after loading. Photos two through four have
+  build-generated 640, 960, 1200, and source-width candidates: constrained or
+  uncertain sessions receive only 640px sequentially, while proven-fast
+  sessions receive a responsive `srcset`. All URLs are content-hashed and
+  immutable. A cached first photograph is not itself evidence of a fast
+  connection, and current Data Saver/2G/3G constraints override saved state.
+  Other normal-view derivatives request AVIF quality 65; the lightbox remains
+  quality 90 and its overlay code loads only on first use. EB Garamond is limited
+  to the globally used 400 normal/italic files. Fast, idle sessions may prefetch
+  only the first immutable AVIF of a gallery whose navigation link receives
+  hover/focus/touch intent; normal route prefetch is disabled for those links.
+- **Why:** A throttled production waterfall showed the 13KB first photograph
+  competing with 92KB of fonts and photos two through four. Browser fetch
+  priority is advisory, so withholding later URLs is the reliable way to protect
+  photo one. The measured font subset saves about 43KB, content hashes remove
+  repeat-visit revalidation, and pre-generated opening frames avoid optimizer
+  cold misses without lowering lightbox detail.
+- **Regeneration:** Run `npm run gen:first-frame-images`. The generator derives
+  each opening sequence from canonical `content/` modules, never changes source
+  photographs, writes hashed files only to `public/images/gallery-fast-path`,
+  and writes build metadata to `generated/`. `npm run build` verifies source
+  hashes, candidate dimensions, manifest sizes, and per-tier byte budgets.
+- **Reverse:** Remove `GalleryImageBootstrap`, restore ordinary `next/image`
+  sources for frames two onward, restore D22's first-frame folder/mapping and
+  font weights, remove the fast-path cache header and prebuild budget, and merge
+  `GalleryLightboxOverlay` back into `GalleryLightbox`.
+
 ### D22. Serve a pre-sized first photograph; warm only three more initially
+- **Status:** Superseded by D23's enforced adaptive queue and hashed opening
+  derivatives.
 - **Decision:** Each gallery route serves a sharp, route-specific AVIF for its
   first photograph with a JPEG fallback. Inside uses a 1200 px landscape
   derivative; the narrower first photographs on Outside, Dance, and Elevator
