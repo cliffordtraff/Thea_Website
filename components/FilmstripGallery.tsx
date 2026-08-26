@@ -26,6 +26,7 @@ declare global {
 // slow session and parallel on a fast one; later requests follow proximity.
 const INITIAL_DESKTOP_WARM_AHEAD = 3;
 const DESKTOP_LOOKAHEAD_VIEWPORTS = 1;
+const DESKTOP_URGENT_COUNT = 3;
 
 /**
  * Scroll-driven horizontal filmstrip (imitates the *feel* of the reference
@@ -184,6 +185,7 @@ export function FilmstripGallery({
       let raf = 0;
       let running = false;
       let hasAdvanced = false;
+      let urgentTimer = 0;
 
       const galleryImages = Array.from(
         track.querySelectorAll<HTMLImageElement>("img"),
@@ -196,13 +198,54 @@ export function FilmstripGallery({
         if (img.complete && img.naturalWidth > 0) markImageSettled(index);
       });
 
-      const warmImage = (img: HTMLImageElement) => {
-        if (img.loading !== "lazy") return;
+      const hasReadyPhotoAt = (offset: number) =>
+        galleryImages.some((img) => {
+          if (img.dataset.sequenceReady !== "true") return false;
+          const frame = img.closest<HTMLElement>("figure");
+          return (
+            frame !== null &&
+            frame.offsetLeft + frame.offsetWidth > offset &&
+            frame.offsetLeft < offset + stage.clientWidth
+          );
+        });
+
+      const prepareImage = (img: HTMLImageElement) => {
+        if (!img.dataset.deferredSrc) return false;
         // Look-ahead requests should start early without competing with the
         // first photograph's sole high-priority request.
         img.fetchPriority = "low";
         img.loading = "eager";
-        requestImages([img]);
+        return true;
+      };
+
+      const prioritizeDestination = (offset: number) => {
+        const urgentImages = galleryImages
+          .slice(INITIAL_DESKTOP_WARM_AHEAD + 1)
+          .filter((img) => {
+            const frame = img.closest<HTMLElement>("figure");
+            return (
+              frame &&
+              frame.offsetLeft + frame.offsetWidth > offset &&
+              frame.offsetLeft < offset + stage.clientWidth * 1.5
+            );
+          })
+          .slice(0, DESKTOP_URGENT_COUNT)
+          .filter(prepareImage);
+        if (urgentImages.length) {
+          requestImages(urgentImages, { urgent: true });
+        }
+      };
+
+      const scheduleDestinationPriority = (offset: number) => {
+        if (!hasAdvanced) return;
+        if (urgentTimer) clearTimeout(urgentTimer);
+        // Trackpads emit a burst of wheel events. Wait for the destination to
+        // settle briefly so a single fast gesture does not start a new
+        // three-photo parallel batch at every intermediate position.
+        urgentTimer = window.setTimeout(() => {
+          urgentTimer = 0;
+          prioritizeDestination(offset);
+        }, 60);
       };
 
       const warmThrough = (offset: number) => {
@@ -212,6 +255,11 @@ export function FilmstripGallery({
           offset +
           stage.clientWidth * (1 + DESKTOP_LOOKAHEAD_VIEWPORTS);
 
+        // A deliberate user gesture changes the priority contract: preserve
+        // the serial opening four, then jump the destination photograph and
+        // two nearby frames ahead of background work.
+        scheduleDestinationPriority(offset);
+
         galleryImages.forEach((img, index) => {
           const frame = img.closest<HTMLElement>("figure");
           const isInsideInitialBuffer =
@@ -219,9 +267,10 @@ export function FilmstripGallery({
           if (
             frame &&
             frame.offsetLeft < cutoff &&
-            (hasAdvanced || isInsideInitialBuffer)
+            (hasAdvanced || isInsideInitialBuffer) &&
+            prepareImage(img)
           ) {
-            warmImage(img);
+            requestImages([img]);
           }
         });
       };
@@ -232,7 +281,8 @@ export function FilmstripGallery({
         firstRequestSettled = true;
         galleryImages
           .slice(1, 1 + INITIAL_DESKTOP_WARM_AHEAD)
-          .forEach(warmImage);
+          .filter(prepareImage)
+          .forEach((image) => requestImages([image]));
         warmThrough(target);
       };
 
@@ -271,8 +321,17 @@ export function FilmstripGallery({
       const tick = () => {
         // Ease the visible position toward the target. 0.09 ≈ a slow, filmic glide.
         const eased = current + (target - current) * 0.09;
-        // Snap when close enough to avoid sub-pixel jitter forever.
-        current = Math.abs(target - eased) < 0.1 ? target : eased;
+        const proposed = Math.abs(target - eased) < 0.1 ? target : eased;
+        if (hasReadyPhotoAt(proposed)) {
+          current = proposed;
+        } else if (hasReadyPhotoAt(target)) {
+          // A very fast gesture may intentionally skip several unloaded
+          // frames. Once its prioritized destination is ready, jump there
+          // instead of animating through a white interval.
+          current = target;
+        }
+        // Otherwise hold the last photograph on screen until either the
+        // intervening frame or the prioritized destination settles.
         track.style.transform = `translate3d(${-current}px, 0, 0)`;
         if (progress) {
           progress.style.transform = `scaleX(${max > 0 ? current / max : 0})`;
@@ -335,7 +394,7 @@ export function FilmstripGallery({
         hasAdvanced = hasAdvanced || target > 0;
         warmThrough(target);
         // Touch feels best near-1:1, so pull current toward target faster.
-        current = target;
+        if (hasReadyPhotoAt(target)) current = target;
         track.style.transform = `translate3d(${-current}px, 0, 0)`;
         if (progress) {
           progress.style.transform = `scaleX(${max > 0 ? current / max : 0})`;
@@ -384,6 +443,7 @@ export function FilmstripGallery({
       return () => {
         cancelAnimationFrame(raf);
         if (hintTimer) clearTimeout(hintTimer);
+        if (urgentTimer) clearTimeout(urgentTimer);
         ro.disconnect();
         firstImage?.removeEventListener("load", warmInitialBuffer);
         firstImage?.removeEventListener("error", warmInitialBuffer);
